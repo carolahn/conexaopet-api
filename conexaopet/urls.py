@@ -28,4 +28,6 @@ urlpatterns = [
     path('api/', include('pet.urls')),
     path('api/', include('address.urls')),
     path('api/', include('event.urls')),
+    path('api/', include('favorite_pet.urls')),
+    path('api/', include('favorite_event.urls')),
 ]

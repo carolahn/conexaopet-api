@@ -12,7 +12,7 @@ class CustomUserSerializer(serializers.ModelSerializer):
         return user
     
     def validate(self, data):
-        user_type = data.get('type')
+        user_type = data.get('type', self.instance.type if self.instance else None)
 
         if user_type == 1:
             required_fields = ['email', 'name', 'username', 'phone', 'city', 'uf', 'password']

@@ -3,8 +3,11 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.pagination import PageNumberPagination
+from django.core.mail import send_mail
+from django.conf import settings
 from .models import Pet, PetImage
 from .serializers import PetSerializer, PetImageSerializer
+from favorite_pet.models import FavoritePet
 
 class PetsPagination(PageNumberPagination):
     page_size = 10  
@@ -44,6 +47,15 @@ def update_pet(request, pk):
     if serializer.is_valid():
         serializer.validated_data['owner'] = request.user
         serializer.save()
+
+        # Envie e-mails aos usuários que favoritaram o pet
+        favorites = FavoritePet.objects.filter(pet=pet)
+        for favorite in favorites:
+            recipient_email = favorite.user.email
+            subject = 'Atualização de Pet'
+            message = f'Olá,\n\nO pet "{pet.name}" foi atualizado. Confira as novidades!'
+            sender_email = settings.EMAIL_HOST_USER
+            send_mail(subject, message, sender_email, [recipient_email])
 
         return Response(serializer.data, status=status.HTTP_200_OK)
     
