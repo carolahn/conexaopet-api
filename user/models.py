@@ -15,3 +15,4 @@ class CustomUser(AbstractUser):
     site = models.CharField(max_length=100, blank=True, null=True) 
     image = models.ImageField(upload_to='profile_images/', blank=True, null=True)
     name = models.CharField(max_length=100, blank=True, null=True)
+
