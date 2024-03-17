@@ -19,7 +19,7 @@ class EventSerializer(serializers.ModelSerializer):
     class Meta:
         model = Event
         fields = ['id', 'pets', 'pets_ids', 'date_hour_initial', 'date_hour_end', 'address', 'owner', 'description', 'images', 'is_active', 'is_confirmed', 'followers']
-        read_only_fields = ['owner', 'is_active']
+        read_only_fields = ['owner', 'is_active', 'followers']
 
     def create(self, validated_data):
         images_data = self.context['request'].FILES.getlist('image')
@@ -92,4 +92,4 @@ class EventDescriptionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Event
         fields = ['id', 'pets', 'pets_ids', 'date_hour_initial', 'date_hour_end', 'address', 'owner', 'description', 'images', 'is_active', 'is_confirmed', 'followers']
-        read_only_fields = ['owner', 'is_active']
+        read_only_fields = ['owner', 'is_active', 'followers']

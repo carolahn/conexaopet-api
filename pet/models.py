@@ -144,6 +144,12 @@ class Pet(models.Model):
         (3, 'crianças'),
     ]
 
+    STAGE_LIFE_CHOICES = [
+        (1, 'filhote'),
+        (2, 'adulto'),
+        (3, 'idoso'),
+    ]
+
     name = models.CharField(max_length=100)
     type = models.IntegerField(choices=TYPE_CHOICES)
     gender = models.CharField(max_length=1, choices=GENDER_CHOICES)
@@ -157,6 +163,7 @@ class Pet(models.Model):
     get_along = ArrayField(models.IntegerField(choices=GET_ALONG_CHOICES), default=list)
     description = models.TextField()
     is_active = models.BooleanField(default=True)
+    followers = models.IntegerField(default=0)
 
 
 class PetImage(models.Model):

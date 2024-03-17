@@ -154,25 +154,7 @@ def get_all_events(request):
     paginator = EventsPagination()
     result_page = paginator.paginate_queryset(events, request)
 
-    serializer = EventSerializer(result_page, many=True)
-    
-    for event_data in serializer.data:
-        address_id = event_data.get('address')
-        if address_id:
-            try:
-                address_instance = Address.objects.get(pk=address_id)
-                address_data = AddressSerializer(address_instance).data
-                event_data['address'] = address_data 
-            except Address.DoesNotExist:
-                pass  
-                
-        owner_id = event_data.get('owner')
-        try:
-            owner_instance = CustomUser.objects.get(pk=owner_id)
-            owner_data = CustomUserSerializer(owner_instance).data
-            event_data['owner'] = owner_data  
-        except CustomUser.DoesNotExist:
-            pass  
+    serializer = EventDescriptionSerializer(result_page, many=True)
 
     return paginator.get_paginated_response(serializer.data)
 

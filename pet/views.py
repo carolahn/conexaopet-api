@@ -6,11 +6,11 @@ from rest_framework.pagination import PageNumberPagination
 from django.core.mail import send_mail
 from django.conf import settings
 from .models import Pet
-from .serializers import PetSerializer, PetDescriptionSerializer
+from .serializers import PetSerializer, PetDescriptionSerializer, SearchPetSerializer
 from user.models import CustomUser
 from user.serializers import CustomUserSerializer
 from favorite_pet.models import FavoritePet
-from django.http import Http404
+from django.http import Http404, JsonResponse
 
 class PetsPagination(PageNumberPagination):
     page_size = 10  
@@ -135,3 +135,52 @@ def update_pet_active_status(request, pk):
         return Response({'success': 'Pet active status updated successfully'}, status=status.HTTP_200_OK)
     else:
         return Response({'error': 'is_active field is required'}, status=status.HTTP_400_BAD_REQUEST)
+    
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def search_pet(request):
+    serializer = SearchPetSerializer(data=request.query_params)
+    serializer.is_valid(raise_exception=True)
+    data = serializer.validated_data
+    
+    city = data.get('city')
+    if city:
+        print("city: ", city)
+        owners = CustomUser.objects.filter(type=2, city__icontains=city)
+        pets = Pet.objects.filter(is_active=True, owner__in=owners).order_by('-id')
+    else:
+        pets = Pet.objects.filter(is_active=True).order_by('-id')
+
+    if 'name' in data:
+        pets = pets.filter(name__icontains=data['name'])
+    if 'type' in data:
+        pets = pets.filter(type=data['type'])
+    if 'gender' in data:
+        pets = pets.filter(gender=data['gender'])
+    if 'age' in data:
+        age = data['age']
+        if age == 1:
+            pets = pets.filter(age_year=0)
+        elif age == 2:
+            pets = pets.filter(age_year__gt=0, age_year__lt=10)
+        else:
+            pets = pets.filter(age_year__gte=10)
+    if 'size' in data:
+        pets = pets.filter(size=data['size'])
+    if 'breed' in data:
+        pets = pets.filter(breed=data['breed'])
+    if 'owner' in data:
+        pets = pets.filter(owner=data['owner'])
+    if 'personality' in data:
+        personality_values = [int(personality) for personality in data['personality'].split(',')]
+        pets = pets.filter(personality__overlap=personality_values)
+    if 'get_along' in data:
+        get_along_values = [int(get_along) for get_along in data['get_along'].split(',')]
+        pets = pets.filter(get_along__overlap=get_along_values)
+
+    paginator = PetsPagination()
+    result_page = paginator.paginate_queryset(pets, request)
+    
+    serializer = PetDescriptionSerializer(result_page, many=True)
+
+    return paginator.get_paginated_response(serializer.data)

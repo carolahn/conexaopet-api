@@ -2,11 +2,16 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.pagination import PageNumberPagination
 from django.http import JsonResponse
 from .models import FavoriteEvent
 from event.models import Event 
 from event.serializers import EventDescriptionSerializer  
 
+class FavoriteEventPagination(PageNumberPagination):
+    page_size = 10  
+    page_size_query_param = 'page_size' 
+    max_page_size = 100 
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
@@ -48,11 +53,14 @@ def remove_favorite_event(request, event_id):
 @permission_classes([IsAuthenticated])
 def list_favorite_events(request):
     try:
-        favorite_events = FavoriteEvent.objects.filter(user_id=request.user.id)
+        favorite_events = FavoriteEvent.objects.filter(user_id=request.user.id).order_by('-id')
     except FavoriteEvent.DoesNotExist:
-        return JsonResponse({'error': 'Usuário não encontrado.'}, status=404)
+        return JsonResponse({'error': 'Não há eventos favoritos.'}, status=404)
 
-    serialized_data = [EventDescriptionSerializer(favorite.event).data for favorite in favorite_events]
+    paginator = FavoriteEventPagination()
+    result_page = paginator.paginate_queryset(favorite_events, request)
 
-    return JsonResponse(serialized_data, safe=False, status=200)
+    serialized_data = [EventDescriptionSerializer(favorite.event).data for favorite in result_page]
+
+    return paginator.get_paginated_response(serialized_data)
 

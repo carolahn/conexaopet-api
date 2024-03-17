@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from .models import Pet, PetImage
 from user.serializers import CustomUserSerializer
+from user.models import CustomUser
 import os
 
 class PetImageSerializer(serializers.ModelSerializer):
@@ -13,8 +14,8 @@ class PetSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Pet
-        fields = ['id', 'name', 'gender', 'age_year', 'age_month', 'weight', 'size', 'breed', 'owner', 'personality', 'get_along', 'description', 'images', 'is_active', 'type']
-        read_only_fields = ['owner', 'is_active']
+        fields = ['id', 'name', 'gender', 'age_year', 'age_month', 'weight', 'size', 'breed', 'owner', 'personality', 'get_along', 'description', 'images', 'is_active', 'type', 'followers']
+        read_only_fields = ['owner', 'is_active', 'followers']
 
     def create(self, validated_data):
         images_data = self.context['request'].FILES.getlist('image')
@@ -68,5 +69,17 @@ class PetDescriptionSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Pet
-        fields = ['id', 'name', 'gender', 'age_year', 'age_month', 'weight', 'size', 'breed', 'owner', 'personality', 'get_along', 'description', 'images', 'is_active', 'type']
+        fields = ['id', 'name', 'gender', 'age_year', 'age_month', 'weight', 'size', 'breed', 'owner', 'personality', 'get_along', 'description', 'images', 'is_active', 'type', 'followers']
         read_only_fields = ['owner', 'is_active']
+
+class SearchPetSerializer(serializers.Serializer):
+    name = serializers.CharField(required=False)
+    type = serializers.ChoiceField(choices=Pet.TYPE_CHOICES, required=False)
+    city = serializers.CharField(required=False)
+    gender = serializers.ChoiceField(choices=Pet.GENDER_CHOICES, required=False)
+    age = serializers.ChoiceField(choices=Pet.STAGE_LIFE_CHOICES, required=False)
+    size = serializers.ChoiceField(choices=Pet.SIZE_CHOICES, required=False)
+    breed = serializers.ChoiceField(choices=Pet.BREED_CHOICES, required=False)
+    owner = serializers.PrimaryKeyRelatedField(queryset=CustomUser.objects.all(), required=False)
+    personality = serializers.CharField(required=False)
+    get_along = serializers.CharField(required=False)
