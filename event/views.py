@@ -158,7 +158,6 @@ def get_all_events(request):
     
     for event_data in serializer.data:
         address_id = event_data.get('address')
-        
         if address_id:
             try:
                 address_instance = Address.objects.get(pk=address_id)

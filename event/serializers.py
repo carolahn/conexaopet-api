@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from .models import Event, EventImage
-from pet.serializers import PetSerializer
+from pet.serializers import PetSerializer, PetDescriptionSerializer
 from user.serializers import CustomUserSerializer
 from address.serializers import AddressSerializer
 from pet.models import Pet
@@ -18,7 +18,7 @@ class EventSerializer(serializers.ModelSerializer):
 		
     class Meta:
         model = Event
-        fields = ['id', 'pets', 'pets_ids', 'date_hour_initial', 'date_hour_end', 'address', 'owner', 'description', 'images', 'is_active', 'is_confirmed']
+        fields = ['id', 'pets', 'pets_ids', 'date_hour_initial', 'date_hour_end', 'address', 'owner', 'description', 'images', 'is_active', 'is_confirmed', 'followers']
         read_only_fields = ['owner', 'is_active']
 
     def create(self, validated_data):
@@ -86,10 +86,10 @@ class EventSerializer(serializers.ModelSerializer):
 class EventDescriptionSerializer(serializers.ModelSerializer):
     owner = CustomUserSerializer()
     address = AddressSerializer()
-    pets = PetSerializer(many=True, read_only=True)
+    pets = PetDescriptionSerializer(many=True, read_only=True)
     images = EventImageSerializer(many=True, required=False)
 
     class Meta:
         model = Event
-        fields = ['id', 'pets', 'pets_ids', 'date_hour_initial', 'date_hour_end', 'address', 'owner', 'description', 'images', 'is_active', 'is_confirmed']
+        fields = ['id', 'pets', 'pets_ids', 'date_hour_initial', 'date_hour_end', 'address', 'owner', 'description', 'images', 'is_active', 'is_confirmed', 'followers']
         read_only_fields = ['owner', 'is_active']

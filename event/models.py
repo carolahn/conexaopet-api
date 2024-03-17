@@ -13,6 +13,7 @@ class Event(models.Model):
     description = models.TextField()
     is_active = models.BooleanField(default=True)
     is_confirmed = models.BooleanField(default=False)
+    followers = models.IntegerField(default=0)
 
 
 class EventImage(models.Model):
