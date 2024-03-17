@@ -5,12 +5,15 @@ from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.pagination import PageNumberPagination
 from django.core.mail import send_mail
 from django.conf import settings
-from .models import Event, EventImage
-from .serializers import EventSerializer, EventImageSerializer
+from .models import Event
+from .serializers import EventSerializer, EventDescriptionSerializer
 from favorite_event.models import FavoriteEvent
 from django.http import Http404
 from django.utils import timezone
-import json
+from address.models import Address
+from address.serializers import AddressSerializer
+from user.models import CustomUser
+from user.serializers import CustomUserSerializer
 
 class EventsPagination(PageNumberPagination):
     page_size = 10  
@@ -27,11 +30,22 @@ def create_event(request):
     
     serializer = EventSerializer(data=request.data, context={'request': request}) 
     
+    try:
+        address_id = request.data.get('address')
+        address_instance = Address.objects.get(pk=address_id)
+    except Address.DoesNotExist:
+        return Response({'error': 'Invalid address ID.'}, status=status.HTTP_400_BAD_REQUEST)
+
     if serializer.is_valid():
         serializer.validated_data['owner'] = request.user
-        event = serializer.save()
+        serializer.validated_data['address'] = address_instance
+
+        serializer.save()
+
+        created_event = Event.objects.get(pk=serializer.data['id'])
+        created_serializer = EventDescriptionSerializer(created_event)
         
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(created_serializer.data, status=status.HTTP_201_CREATED)
     
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -48,11 +62,22 @@ def update_event(request, pk):
     
     serializer = EventSerializer(event, data=request.data, partial=True, context={'request': request})
     
+    try:
+        address_id = request.data.get('address', event.address.id)
+        address_instance = Address.objects.get(pk=address_id)
+    except Address.DoesNotExist:
+        return Response({'error': 'Invalid address ID.'}, status=status.HTTP_400_BAD_REQUEST)
+    
     if serializer.is_valid():
         serializer.validated_data['owner'] = request.user
+        serializer.validated_data['address'] = address_instance
+
         serializer.save()
 
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        updated_event = Event.objects.get(pk=serializer.data['id'])
+        updated_serializer = EventDescriptionSerializer(updated_event)
+
+        return Response(updated_serializer.data, status=status.HTTP_200_OK)
     
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -78,14 +103,11 @@ def update_event_active_status(request, pk):
 @api_view(['PUT'])
 @permission_classes([IsAuthenticated])
 def update_all_events_active_status(request):
-    # Verifica se o usuário é autenticado e tem type=2
     if not request.user.is_authenticated or request.user.type != 2:
         return Response({'error': 'You do not have permission to perform this action.'}, status=status.HTTP_403_FORBIDDEN)
     
-    # Recupera todos os eventos do usuário autenticado
     events = Event.objects.filter(owner=request.user)
     
-    # Atualiza o status de is_active para False em eventos onde date_hour_end passou
     for event in events:
         if event.date_hour_end < timezone.now():
             event.is_active = False
@@ -120,7 +142,6 @@ def set_event_confirmation(request, pk):
                 message = f'O evento do dia "{event.date_hour_initial}" foi confirmado! Venha participar!'
                 sender_email = settings.EMAIL_HOST_USER
                 send_mail(subject, message, sender_email, [recipient_email])
-                print("email: ", recipient_email)
 
         return Response({'success': 'Status de confirmação do evento atualizado com sucesso'}, status=status.HTTP_200_OK)
     else:
@@ -135,6 +156,25 @@ def get_all_events(request):
 
     serializer = EventSerializer(result_page, many=True)
     
+    for event_data in serializer.data:
+        address_id = event_data.get('address')
+        
+        if address_id:
+            try:
+                address_instance = Address.objects.get(pk=address_id)
+                address_data = AddressSerializer(address_instance).data
+                event_data['address'] = address_data 
+            except Address.DoesNotExist:
+                pass  
+                
+        owner_id = event_data.get('owner')
+        try:
+            owner_instance = CustomUser.objects.get(pk=owner_id)
+            owner_data = CustomUserSerializer(owner_instance).data
+            event_data['owner'] = owner_data  
+        except CustomUser.DoesNotExist:
+            pass  
+
     return paginator.get_paginated_response(serializer.data)
 
 @api_view(['GET'])
@@ -145,7 +185,7 @@ def get_event_by_id(request, pk):
     except Event.DoesNotExist:
         raise Http404
     
-    serializer = EventSerializer(event)
+    serializer = EventDescriptionSerializer(event)
     
     return Response(serializer.data)
 

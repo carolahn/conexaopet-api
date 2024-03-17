@@ -3,6 +3,8 @@ from rest_framework import generics, status
 from rest_framework.permissions import AllowAny
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from rest_framework_simplejwt.views import TokenObtainPairView
+from rest_framework_simplejwt.tokens import AccessToken
 from .models import CustomUser
 from .serializers import CustomUserSerializer
 
@@ -62,3 +64,31 @@ class UpdateUserView(generics.UpdateAPIView):
             return Response(serializer.data)
         else:
             return Response({'error': 'You do not have permission to edit this user.'}, status=status.HTTP_403_FORBIDDEN)
+
+class CustomTokenObtainPairView(TokenObtainPairView):
+    def post(self, request, *args, **kwargs):
+        response = super().post(request, *args, **kwargs)
+        if response.status_code == 200:
+            username = request.data.get('username') 
+
+            try:
+                custom_user = CustomUser.objects.get(username=username)
+                custom_data = {
+                    'user_id': custom_user.id,
+                    'username': custom_user.username,
+                    'email': custom_user.email,
+                    'type': custom_user.type,
+                    'phone': custom_user.phone,
+                    'city': custom_user.city,
+                    'uf': custom_user.uf,
+                    'pix': custom_user.pix,
+                    'site': custom_user.site,
+                    'name': custom_user.name,
+                    'image': custom_user.image.url if custom_user.image else None
+                }
+                response.data['user'] = custom_data
+ 
+            except CustomUser.DoesNotExist:
+                pass
+           
+        return response

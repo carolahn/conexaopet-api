@@ -25,3 +25,13 @@ class CupomUpdateSerializer(serializers.ModelSerializer):
         model = Cupom
         fields = ['id', 'value', 'description', 'expiration', 'image', 'owner', 'is_active']
         read_only_fields = ['owner', 'is_active']
+
+    def update(self, instance, validated_data):
+        # Verifica se uma nova imagem foi fornecida na requisição
+        new_image = validated_data.get('image', None)
+        if new_image:
+            # Se uma nova imagem foi fornecida, apaga a imagem antiga se existir
+            if instance.image:
+                instance.image.delete()
+        # Chama o método update da classe pai para realizar a atualização padrão
+        return super().update(instance, validated_data)

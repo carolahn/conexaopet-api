@@ -5,9 +5,12 @@ from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.pagination import PageNumberPagination
 from django.core.mail import send_mail
 from django.conf import settings
-from .models import Pet, PetImage
-from .serializers import PetSerializer, PetImageSerializer
+from .models import Pet
+from .serializers import PetSerializer, PetDescriptionSerializer
+from user.models import CustomUser
+from user.serializers import CustomUserSerializer
 from favorite_pet.models import FavoritePet
+from django.http import Http404
 
 class PetsPagination(PageNumberPagination):
     page_size = 10  
@@ -25,9 +28,12 @@ def create_pet(request):
     
     if serializer.is_valid():
         serializer.validated_data['owner'] = request.user
-        pet = serializer.save()
+        serializer.save()
+
+        created_pet = Pet.objects.get(pk=serializer.data['id'])
+        created_serializer = PetDescriptionSerializer(created_pet)
         
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(created_serializer.data, status=status.HTTP_201_CREATED)
     
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -57,37 +63,75 @@ def update_pet(request, pk):
             sender_email = settings.EMAIL_HOST_USER
             send_mail(subject, message, sender_email, [recipient_email])
 
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        updated_pet = Pet.objects.get(pk=serializer.data['id'])
+        updated_serializer = PetDescriptionSerializer(updated_pet)
+
+        return Response(updated_serializer.data, status=status.HTTP_200_OK)
     
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(['GET'])
 def get_all_pets(request):
-    # Recupera todos os pets ativos do banco de dados
     pets = Pet.objects.filter(is_active=True)
     
     paginator = PetsPagination()
     result_page = paginator.paginate_queryset(pets, request)
 
-    # Serializa os pets para formatar a resposta
     serializer = PetSerializer(result_page, many=True)
     
-    # Retorna a lista de pets
+    for pet_data in serializer.data:   
+        owner_id = pet_data.get('owner')
+        try:
+            owner_instance = CustomUser.objects.get(pk=owner_id)
+            owner_data = CustomUserSerializer(owner_instance).data
+            pet_data['owner'] = owner_data 
+        except CustomUser.DoesNotExist:
+            pass  
+
     return paginator.get_paginated_response(serializer.data)
 
 @api_view(['GET'])
 @permission_classes([AllowAny])
 def get_pet_by_id(request, pk):
     try:
-        # Recupera o pet pelo ID
-        pet = Pet.objects.get(pk=pk, is_active=True)
+        pet = Pet.objects.get(pk=pk)
     except Pet.DoesNotExist:
-        # Se o pet não existir ou não estiver ativo, retorna um erro 404
         raise Http404
     
-    # Serializa o pet para formatar a resposta
-    serializer = PetSerializer(pet)
+    serializer = PetDescriptionSerializer(pet)
     
-    # Retorna os detalhes do pet
     return Response(serializer.data)
+
+
+@api_view(['PUT'])
+@permission_classes([IsAuthenticated])
+def update_pet_active_status(request, pk):
+    try:
+        pet = Pet.objects.get(pk=pk)
+    except Pet.DoesNotExist:
+        return Response({'error': 'Pet does not exist.'}, status=status.HTTP_404_NOT_FOUND)
+    
+    if request.user != pet.owner:
+        return Response({'error': 'You are not the owner of this pet'}, status=status.HTTP_403_FORBIDDEN)
+    
+    is_active = request.data.get('is_active', None)
+    if is_active is not None:
+        pet.is_active = is_active
+        pet.save()
+
+        if is_active is False:
+            # Envie e-mails aos usuários que favoritaram o pet
+            favorites = FavoritePet.objects.filter(pet=pet)
+            for favorite in favorites:
+                recipient_email = favorite.user.email
+                subject = 'Pet indisponível'
+                message = f'Olá,\n\nO pet "{pet.name}" não está mais disponível.\nVeja outros pets que estão aguardando um lar.'
+                sender_email = settings.EMAIL_HOST_USER
+                send_mail(subject, message, sender_email, [recipient_email])
+
+            favorites.delete()
+
+        return Response({'success': 'Pet active status updated successfully'}, status=status.HTTP_200_OK)
+    else:
+        return Response({'error': 'is_active field is required'}, status=status.HTTP_400_BAD_REQUEST)
