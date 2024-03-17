@@ -170,3 +170,33 @@ def get_event_by_id(request, pk):
     
     return Response(serializer.data)
 
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def search_event(request):
+    pets_ids = request.query_params.get('pets', None)
+    date = request.query_params.get('date', None)
+    city = request.query_params.get('city', None)
+    owner_id = request.query_params.get('owner', None)
+
+    events = Event.objects.filter(is_active=True).order_by('-id')
+
+    if pets_ids:
+        pets_values = [int(id) for id in pets_ids.split(',')]
+        events = events.filter(pets__id__in=pets_values)
+
+    if date:
+        events = events.filter(date_hour_initial__date=date)
+
+    if city:
+        addresses = Address.objects.filter(city__icontains=city)
+        events = events.filter(address__in=addresses)
+
+    if owner_id:
+        events = events.filter(owner_id=owner_id)
+
+    paginator = EventsPagination()
+    result_page = paginator.paginate_queryset(events, request)
+
+    serializer = EventDescriptionSerializer(result_page, many=True)
+
+    return paginator.get_paginated_response(serializer.data)
