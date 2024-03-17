@@ -33,5 +33,5 @@ class CupomUpdateSerializer(serializers.ModelSerializer):
             # Se uma nova imagem foi fornecida, apaga a imagem antiga se existir
             if instance.image:
                 instance.image.delete()
-        # Chama o método update da classe pai para realizar a atualização padrão
+        
         return super().update(instance, validated_data)

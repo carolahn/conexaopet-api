@@ -28,15 +28,12 @@ class UpdateUserView(generics.UpdateAPIView):
         partial = kwargs.pop('partial', False)
         user = self.get_object()
         
-        
-        # Obter os dados do request
         data = request.data.copy()
 
          # Se uma nova imagem for enviada, exclua a imagem anterior do usuário
         if 'image' in data:
             user.image.delete(save=False) 
         
-        # Verificar se os campos não estão presentes no request e definir como o valor atual do objeto
         if 'name' not in data:
             data['name'] = user.name
         if 'email' not in data:

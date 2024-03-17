@@ -11,9 +11,6 @@ from favorite_event.models import FavoriteEvent
 from django.http import Http404
 from django.utils import timezone
 from address.models import Address
-from address.serializers import AddressSerializer
-from user.models import CustomUser
-from user.serializers import CustomUserSerializer
 
 class EventsPagination(PageNumberPagination):
     page_size = 10  

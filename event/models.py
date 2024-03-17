@@ -23,7 +23,6 @@ class EventImage(models.Model):
     custom_name = models.CharField(max_length=255, blank=True, null=True)
 
     def delete(self, *args, **kwargs):
-        # Remove o arquivo de imagem associado
         if self.image:
             try:
                 os.remove(self.image.path)

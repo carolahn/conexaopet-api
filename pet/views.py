@@ -10,7 +10,7 @@ from .serializers import PetSerializer, PetDescriptionSerializer, SearchPetSeria
 from user.models import CustomUser
 from user.serializers import CustomUserSerializer
 from favorite_pet.models import FavoritePet
-from django.http import Http404, JsonResponse
+from django.http import Http404
 
 class PetsPagination(PageNumberPagination):
     page_size = 10  
@@ -145,7 +145,6 @@ def search_pet(request):
     
     city = data.get('city')
     if city:
-        print("city: ", city)
         owners = CustomUser.objects.filter(type=2, city__icontains=city)
         pets = Pet.objects.filter(is_active=True, owner__in=owners).order_by('-id')
     else:

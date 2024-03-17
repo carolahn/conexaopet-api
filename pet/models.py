@@ -178,7 +178,6 @@ class PetImage(models.Model):
             try:
                 os.remove(self.image.path)
             except FileNotFoundError:
-                pass  # Se o arquivo não existir, não há necessidade de removê-lo
+                pass  
 
-        # Chama o método delete da classe pai para excluir a instância do modelo
         super(PetImage, self).delete(*args, **kwargs)
