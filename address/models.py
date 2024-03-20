@@ -8,5 +8,8 @@ class Address(models.Model):
     city = models.CharField(max_length=100)
     uf = models.CharField(max_length=2)
 
+    class Meta:
+        db_table = 'address'
+
     def __str__(self):
         return f"{self.name} - {self.street}, {self.number}, {self.district}, {self.city}, {self.uf}"

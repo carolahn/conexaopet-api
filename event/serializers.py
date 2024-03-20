@@ -34,7 +34,7 @@ class EventSerializer(serializers.ModelSerializer):
         event.pets_ids = pets_ids_str
 
         for i, image_data in enumerate(images_data):
-            event_image = EventImage.objects.create(event=event, image=image_data, order=i)
+            event_image = EventImage.objects.create(event=event, image=image_data, order_number=i)
             image_path = event_image.image.path
             os.chmod(image_path, 0o644)
 
@@ -74,7 +74,7 @@ class EventSerializer(serializers.ModelSerializer):
             image.delete()
         
         for i, image_data in enumerate(images_data):
-            event_image = EventImage.objects.create(event=instance, image=image_data, order=i)
+            event_image = EventImage.objects.create(event=instance, image=image_data, order_number=i)
             # Define as permissões do arquivo de imagem após salvá-lo
             image_path = event_image.image.path
             os.chmod(image_path, 0o644)

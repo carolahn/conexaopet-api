@@ -21,7 +21,7 @@ class PetSerializer(serializers.ModelSerializer):
         images_data = self.context['request'].FILES.getlist('image')
         pet = Pet.objects.create(**validated_data)
         for i, image_data in enumerate(images_data):
-            pet_image = PetImage.objects.create(pet=pet, image=image_data, order=i)
+            pet_image = PetImage.objects.create(pet=pet, image=image_data, order_number=i)
             # Define as permissões do arquivo de imagem após salvá-lo
             image_path = pet_image.image.path
             os.chmod(image_path, 0o644)
@@ -54,7 +54,7 @@ class PetSerializer(serializers.ModelSerializer):
             image.delete()
         
         for i, image_data in enumerate(images_data):
-            pet_image = PetImage.objects.create(pet=instance, image=image_data, order=i)
+            pet_image = PetImage.objects.create(pet=instance, image=image_data, order_number=i)
             # Define as permissões do arquivo de imagem após salvá-lo
             image_path = pet_image.image.path
             os.chmod(image_path, 0o644)

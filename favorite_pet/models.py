@@ -7,6 +7,7 @@ class FavoritePet(models.Model):
     pet = models.ForeignKey(Pet, on_delete=models.CASCADE)
 
     class Meta:
+        db_table = 'favorite_pet'
         unique_together = ('user', 'pet')
 
     def __str__(self):

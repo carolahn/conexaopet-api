@@ -8,3 +8,6 @@ class Cupom(models.Model):
     image = models.ImageField(upload_to='cupom_images/', blank=True, null=True)
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     is_active = models.BooleanField(default=True)
+
+    class Meta:
+        db_table = 'cupom'

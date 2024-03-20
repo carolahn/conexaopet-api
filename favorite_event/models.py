@@ -7,6 +7,7 @@ class FavoriteEvent(models.Model):
     event = models.ForeignKey(Event, on_delete=models.CASCADE)
 
     class Meta:
+        db_table = 'favorite_event'
         unique_together = ('user', 'event')
 
     def __str__(self):

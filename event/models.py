@@ -15,12 +15,18 @@ class Event(models.Model):
     is_confirmed = models.BooleanField(default=False)
     followers = models.IntegerField(default=0)
 
+    class Meta:
+        db_table = 'event'
+
 
 class EventImage(models.Model):
     event = models.ForeignKey(Event, on_delete=models.CASCADE, related_name='images')
     image = models.ImageField(upload_to='event_images/')
-    order = models.IntegerField(default=0)
+    order_number = models.IntegerField(default=0)
     custom_name = models.CharField(max_length=255, blank=True, null=True)
+
+    class Meta:
+        db_table = 'event_image'
 
     def delete(self, *args, **kwargs):
         if self.image:

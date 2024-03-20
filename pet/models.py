@@ -165,12 +165,18 @@ class Pet(models.Model):
     is_active = models.BooleanField(default=True)
     followers = models.IntegerField(default=0)
 
+    class Meta:
+        db_table = 'pet'
+
 
 class PetImage(models.Model):
     pet = models.ForeignKey(Pet, on_delete=models.CASCADE, related_name='images')
     image = models.ImageField(upload_to='pet_images/')
-    order = models.IntegerField(default=0)
+    order_number = models.IntegerField(default=0)
     custom_name = models.CharField(max_length=255, blank=True, null=True)
+
+    class Meta:
+        db_table = 'pet_image'
 
     def delete(self, *args, **kwargs):
         # Remove o arquivo de imagem associado
