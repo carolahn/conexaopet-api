@@ -69,7 +69,7 @@ def get_all_cupons(request):
     
     serializer = CupomSerializer(result_page, many=True)
     
-    return Response(serializer.data)
+    return paginator.get_paginated_response(serializer.data)
 
 @api_view(['GET'])
 @permission_classes([AllowAny])  
