@@ -20,9 +20,10 @@ def create_cupom(request):
     if request.user.type != 3:
         return Response({'error': 'You do not have permission to perform this action.'}, status=status.HTTP_403_FORBIDDEN)
     
-    request.data['owner'] = request.user.id
+    request_data = request.data.copy()
+    request_data['owner'] = request.user.id
 
-    serializer = CupomUpdateSerializer(data=request.data)
+    serializer = CupomUpdateSerializer(data=request_data)
     
     if serializer.is_valid():
         serializer.validated_data['owner'] = request.user
@@ -34,6 +35,7 @@ def create_cupom(request):
       
         return Response(created_serializer.data, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 @api_view(['PUT'])
 @permission_classes([IsAuthenticated])

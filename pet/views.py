@@ -23,8 +23,9 @@ def create_pet(request):
     if request.user.type != 2:
         return Response({'error': 'You do not have permission to perform this action.'}, status=status.HTTP_403_FORBIDDEN)
     
-    request.data['owner'] = request.user.id
-    serializer = PetSerializer(data=request.data, context={'request': request}) 
+    request_data = request.data.copy()
+    request_data['owner'] = request.user.id
+    serializer = PetSerializer(data=request_data, context={'request': request}) 
     
     if serializer.is_valid():
         serializer.validated_data['owner'] = request.user
@@ -73,7 +74,7 @@ def update_pet(request, pk):
 
 @api_view(['GET'])
 def get_all_pets(request):
-    pets = Pet.objects.filter(is_active=True)
+    pets = Pet.objects.filter(is_active=True).order_by('-id')
     
     paginator = PetsPagination()
     result_page = paginator.paginate_queryset(pets, request)
