@@ -71,7 +71,7 @@ class CustomTokenObtainPairView(TokenObtainPairView):
             try:
                 custom_user = CustomUser.objects.get(username=username)
                 custom_data = {
-                    'user_id': custom_user.id,
+                    'id': custom_user.id,
                     'username': custom_user.username,
                     'email': custom_user.email,
                     'type': custom_user.type,
