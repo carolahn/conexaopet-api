@@ -171,7 +171,7 @@ class Pet(models.Model):
 
 class PetImage(models.Model):
     pet = models.ForeignKey(Pet, on_delete=models.CASCADE, related_name='images')
-    image = models.ImageField(upload_to='pet_images/')
+    image = models.ImageField(upload_to='media/pet_images/')
     order_number = models.IntegerField(default=0)
     custom_name = models.CharField(max_length=255, blank=True, null=True)
 

@@ -1,5 +1,9 @@
 from django.contrib import admin
 from django.urls import path, include
+from django.conf.urls.static import static
+from django.conf import settings
+from django.urls import re_path
+from django.views.static import serve
 from rest_framework import permissions
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
@@ -28,3 +32,15 @@ urlpatterns = [
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
     path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
 ]
+
+# urlpatterns += [
+#     re_path(r'^api/media/cupom_images/(?P<path>.*)$', serve, {'document_root': settings.CUPOM_IMAGES_DIR}),
+#     re_path(r'^api/media/event_images/(?P<path>.*)$', serve, {'document_root': settings.EVENT_IMAGES_DIR}),
+#     re_path(r'^api/media/pet_images/(?P<path>.*)$', serve, {'document_root': settings.PET_IMAGES_DIR}),
+#     re_path(r'^api/media/profile_images/(?P<path>.*)$', serve, {'document_root': settings.PROFILE_IMAGES_DIR}),
+# ]
+
+urlpatterns += static(settings.CUPOM_IMAGES_URL, document_root=settings.CUPOM_IMAGES_DIR)
+urlpatterns += static(settings.EVENT_IMAGES_URL, document_root=settings.EVENT_IMAGES_DIR)
+urlpatterns += static(settings.PET_IMAGES_URL, document_root=settings.PET_IMAGES_DIR)
+urlpatterns += static(settings.PROFILE_IMAGES_URL, document_root=settings.PROFILE_IMAGES_DIR)

@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 
 from pathlib import Path
 import datetime
+import os
 from decouple import config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -167,3 +168,14 @@ EMAIL_PORT = 587  # Porta TLS
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = config('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
+
+# URL das imagens
+CUPOM_IMAGES_DIR = os.path.join(BASE_DIR, 'media', 'cupom_images')
+EVENT_IMAGES_DIR = os.path.join(BASE_DIR, 'media', 'event_images')
+PET_IMAGES_DIR = os.path.join(BASE_DIR, 'media', 'pet_images')
+PROFILE_IMAGES_DIR = os.path.join(BASE_DIR, 'media', 'profile_images')
+
+CUPOM_IMAGES_URL = '/media/cupom_images/'
+EVENT_IMAGES_URL = '/media/event_images/'
+PET_IMAGES_URL = '/media/pet_images/'
+PROFILE_IMAGES_URL = '/media/profile_images/'

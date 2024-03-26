@@ -13,7 +13,7 @@ class CustomUser(AbstractUser):
     uf = models.CharField(max_length=3, blank=True, null=True) 
     pix = models.CharField(max_length=100, blank=True, null=True) 
     site = models.CharField(max_length=100, blank=True, null=True) 
-    image = models.ImageField(upload_to='profile_images/', blank=True, null=True)
+    image = models.ImageField(upload_to='media/profile_images/', blank=True, null=True)
     name = models.CharField(max_length=100, blank=True, null=True)
     first_name = models.CharField(max_length=30, blank=True, null=True)
     last_name = models.CharField(max_length=150, blank=True, null=True)

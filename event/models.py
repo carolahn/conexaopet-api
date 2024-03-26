@@ -21,7 +21,7 @@ class Event(models.Model):
 
 class EventImage(models.Model):
     event = models.ForeignKey(Event, on_delete=models.CASCADE, related_name='images')
-    image = models.ImageField(upload_to='event_images/')
+    image = models.ImageField(upload_to='media/event_images/')
     order_number = models.IntegerField(default=0)
     custom_name = models.CharField(max_length=255, blank=True, null=True)
 
