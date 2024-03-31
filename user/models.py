@@ -15,6 +15,7 @@ class CustomUser(AbstractUser):
     site = models.CharField(max_length=100, blank=True, null=True) 
     image = models.ImageField(upload_to='media/profile_images/', blank=True, null=True)
     name = models.CharField(max_length=100, blank=True, null=True)
+    description = models.CharField(max_length=400, blank=True, null=True)
     first_name = models.CharField(max_length=30, blank=True, null=True)
     last_name = models.CharField(max_length=150, blank=True, null=True)
     is_staff = models.BooleanField(blank=True, null=True, default=False)

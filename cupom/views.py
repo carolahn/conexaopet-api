@@ -6,6 +6,7 @@ from rest_framework.permissions import IsAuthenticated
 from django.http import Http404
 from django.utils import timezone
 from rest_framework.pagination import PageNumberPagination
+from datetime import timedelta
 from .models import Cupom
 from .serializers import CupomSerializer, CupomUpdateSerializer
 
@@ -20,7 +21,7 @@ def create_cupom(request):
     if request.user.type != 3:
         return Response({'error': 'You do not have permission to perform this action.'}, status=status.HTTP_403_FORBIDDEN)
     
-    request_data = request.data.copy()
+    request_data = request.data
     request_data['owner'] = request.user.id
 
     serializer = CupomUpdateSerializer(data=request_data)
@@ -48,9 +49,10 @@ def update_cupom(request, pk):
     if request.user != cupom.owner:
         return Response({'error': 'You are not the owner of this cupom'}, status=status.HTTP_403_FORBIDDEN)
     
-    request.data['owner'] = request.user.id
+    request_data = request.data;
+    request_data['owner'] = request.user.id
 
-    serializer = CupomUpdateSerializer(cupom, data=request.data)
+    serializer = CupomUpdateSerializer(cupom, data=request_data)
     
     if serializer.is_valid():
         serializer.save()
@@ -89,16 +91,70 @@ def get_cupom_by_id(request, pk):
 @permission_classes([IsAuthenticated])
 def update_expired_cupons(request):
     user = request.user
-    active_cupons = Cupom.objects.filter(owner=user, is_active=True)
     
-    expired_count = 0
+    # Cupons que já estão inativos e expiraram
+    expired_inactive_cupons = Cupom.objects.filter(owner=user, is_active=False, expiration__lt=timezone.now() - timedelta(days=90))
+    expired_inactive_count = expired_inactive_cupons.count()
 
-    for cupom in active_cupons:
-        # Verifica se a data de expiração já passou
-        if cupom.expiration < timezone.now():
-            # Define is_active como False
-            cupom.is_active = False
-            cupom.save()
-            expired_count += 1
+    # Remover cupons inativos e expirados há mais de 90 dias e suas imagens
+    for cupom in expired_inactive_cupons:
+        if cupom.image:
+            cupom.image.delete()
+        cupom.delete()
+
+    # Cupons que estão ativos e expiraram
+    expired_active_cupons = Cupom.objects.filter(owner=user, is_active=True, expiration__lt=timezone.now())
+    expired_active_count = expired_active_cupons.count()
+
+    # Atualizar cupons ativos que expiraram para inativos
+    for cupom in expired_active_cupons:
+        cupom.is_active = False
+        cupom.save()
+
+    # Envia a nova lista de cupons ativos
+    cupons = Cupom.objects.filter(owner=user, is_active=True).order_by('expiration')
+
+    paginator = CupomPagination()
+    result_page = paginator.paginate_queryset(cupons, request)
     
-    return Response({'Cupons expirados': expired_count}, status=status.HTTP_200_OK)
+    serializer = CupomSerializer(result_page, many=True)
+
+    response_data = {
+        'cupons': serializer.data,
+        'expired_inactive_count': expired_inactive_count,
+        'expired_active_count': expired_active_count
+    }
+    
+    return paginator.get_paginated_response(response_data)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_user_coupons(request):
+    user = request.user
+    paginator = CupomPagination()
+
+    user_coupons = Cupom.objects.filter(owner=user).order_by('expiration')
+    result_page = paginator.paginate_queryset(user_coupons, request)
+
+    serializer = CupomSerializer(result_page, many=True)
+    
+    return paginator.get_paginated_response(serializer.data)
+
+@api_view(['DELETE'])
+@permission_classes([IsAuthenticated])
+def delete_cupom(request, pk):
+    try:
+        cupom = Cupom.objects.get(pk=pk)
+    except Cupom.DoesNotExist:
+        return Response({'error': 'Cupom does not exist.'}, status=status.HTTP_404_NOT_FOUND)
+    
+    if request.user != cupom.owner:
+        return Response({'error': 'You are not the owner of this cupom'}, status=status.HTTP_403_FORBIDDEN)
+    
+    # Remover a imagem associada ao cupom se existir
+    if cupom.image:
+        cupom.image.delete()
+
+    cupom.delete()
+    
+    return Response({'success': 'Cupom deleted successfully'}, status=status.HTTP_204_NO_CONTENT)

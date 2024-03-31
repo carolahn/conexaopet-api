@@ -156,7 +156,7 @@ class Pet(models.Model):
     age_year = models.IntegerField()
     age_month = models.IntegerField()
     weight = models.DecimalField(max_digits=5, decimal_places=2)
-    size = models.CharField(max_length=50, choices=SIZE_CHOICES)
+    size = models.CharField(max_length=50, choices=SIZE_CHOICES, editable=False)
     breed = models.IntegerField(choices=BREED_CHOICES, default=1)
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     personality = ArrayField(models.IntegerField(choices=PERSONALITY_CHOICES), default=list)
@@ -168,6 +168,20 @@ class Pet(models.Model):
     class Meta:
         db_table = 'pet'
 
+    def save(self, *args, **kwargs):
+        if not self.size:  # Verifica se size está vazio
+            self.size = self.calculate_size()  # Define size automaticamente com base no peso
+        super(Pet, self).save(*args, **kwargs)
+
+    def calculate_size(self):
+        if 0 < self.weight <= 6:
+            return 'miniatura'
+        elif 6 < self.weight <= 15:
+            return 'pequeno'
+        elif 15 < self.weight <= 25:
+            return 'médio'
+        else:
+            return 'grande'
 
 class PetImage(models.Model):
     pet = models.ForeignKey(Pet, on_delete=models.CASCADE, related_name='images')

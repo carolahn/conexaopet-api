@@ -52,6 +52,8 @@ class UpdateUserView(generics.UpdateAPIView):
             data['site'] = user.site
         if 'password' not in data:
             data['password'] = user.password
+        if 'description' not in data:
+            data['description'] = user.description
         
         serializer = self.get_serializer(user, data=data, partial=partial)
         
@@ -81,6 +83,7 @@ class CustomTokenObtainPairView(TokenObtainPairView):
                     'pix': custom_user.pix,
                     'site': custom_user.site,
                     'name': custom_user.name,
+                    'description': custom_user.description,
                     'image': custom_user.image.url if custom_user.image else None
                 }
                 response.data['user'] = custom_data

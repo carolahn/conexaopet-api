@@ -15,7 +15,7 @@ class PetSerializer(serializers.ModelSerializer):
     class Meta:
         model = Pet
         fields = ['id', 'name', 'gender', 'age_year', 'age_month', 'weight', 'size', 'breed', 'owner', 'personality', 'get_along', 'description', 'images', 'is_active', 'type', 'followers']
-        read_only_fields = ['owner', 'is_active', 'followers']
+        read_only_fields = ['owner', 'is_active', 'followers', 'size']
 
     def create(self, validated_data):
         images_data = self.context['request'].FILES.getlist('image')
@@ -34,12 +34,22 @@ class PetSerializer(serializers.ModelSerializer):
         instance.age_year = validated_data.get('age_year', instance.age_year)
         instance.age_month = validated_data.get('age_month', instance.age_month)
         instance.weight = validated_data.get('weight', instance.weight)
-        instance.size = validated_data.get('size', instance.size)
         instance.breed = validated_data.get('breed', instance.breed)
         instance.personality = validated_data.get('personality', instance.personality)
         instance.get_along = validated_data.get('get_along', instance.get_along)
         instance.description = validated_data.get('description', instance.description)
         instance.is_active = validated_data.get('is_active', instance.is_active)
+
+        if 'weight' in validated_data:
+            weight = validated_data['weight']
+            if weight < 5:
+                instance.size = 'miniatura'
+            elif 5 <= weight < 15:
+                instance.size = 'pequeno'
+            elif 15 <= weight < 30:
+                instance.size = 'médio'
+            else:
+                instance.size = 'grande'
 
         images_data = self.context['request'].FILES.getlist('image')
         
@@ -66,11 +76,15 @@ class PetSerializer(serializers.ModelSerializer):
 class PetDescriptionSerializer(serializers.ModelSerializer):
     owner = CustomUserSerializer()
     images = PetImageSerializer(many=True, required=False)
+    breed = serializers.SerializerMethodField()
 
     class Meta:
         model = Pet
         fields = ['id', 'name', 'gender', 'age_year', 'age_month', 'weight', 'size', 'breed', 'owner', 'personality', 'get_along', 'description', 'images', 'is_active', 'type', 'followers']
-        read_only_fields = ['owner', 'is_active']
+        read_only_fields = ['owner', 'is_active', 'size']
+
+    def get_breed(self, obj):
+        return obj.get_breed_display()
 
 class SearchPetSerializer(serializers.Serializer):
     name = serializers.CharField(required=False)

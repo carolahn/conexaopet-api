@@ -90,6 +90,11 @@ def get_all_pets(request):
         except CustomUser.DoesNotExist:
             pass  
 
+        breed_key = pet_data.get('breed')
+        breed_display = dict(Pet.BREED_CHOICES).get(breed_key)
+        pet_data['breed'] = breed_display
+
+
     return paginator.get_paginated_response(serializer.data)
 
 @api_view(['GET'])
@@ -184,3 +189,18 @@ def search_pet(request):
     serializer = PetDescriptionSerializer(result_page, many=True)
 
     return paginator.get_paginated_response(serializer.data)
+
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def get_pets_by_protector(request, pk):
+    try:
+        pets = Pet.objects.filter(owner=pk, is_active=True).order_by('-id')
+
+        paginator = PetsPagination()
+        result_page = paginator.paginate_queryset(pets, request)
+        serializer = PetDescriptionSerializer(result_page, many=True)
+
+        return paginator.get_paginated_response(serializer.data)
+    
+    except Pet.DoesNotExist:
+        return Response({'error': 'No pets found for this protector'}, status=status.HTTP_404_NOT_FOUND)

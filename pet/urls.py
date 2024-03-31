@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import create_pet, update_pet, get_all_pets, get_pet_by_id, update_pet_active_status, search_pet
+from .views import create_pet, update_pet, get_all_pets, get_pet_by_id, update_pet_active_status, search_pet, get_pets_by_protector
 
 urlpatterns = [
     path('pets/', create_pet, name='create_pet'),
@@ -8,4 +8,5 @@ urlpatterns = [
     path('pets/all/', get_all_pets, name='get_all_pets'),
     path('pets/<int:pk>/', get_pet_by_id, name='pet-detail'),
     path('pets/search/', search_pet, name='search-pet'),
+    path('pets/protector/<int:pk>/', get_pets_by_protector, name='get_pets_by_protector'),
 ]

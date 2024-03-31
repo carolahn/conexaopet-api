@@ -3,6 +3,7 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.pagination import PageNumberPagination
+from rest_framework.views import APIView
 from django.core.mail import send_mail
 from django.conf import settings
 from .models import Event
@@ -197,3 +198,18 @@ def search_event(request):
     serializer = EventDescriptionSerializer(result_page, many=True)
 
     return paginator.get_paginated_response(serializer.data)
+
+
+class EventListByProtector(APIView):
+    def get(self, request, pk):
+        try:
+            events = Event.objects.filter(owner_id=pk, is_active=True).order_by('-id')
+
+            paginator = EventsPagination()
+            result_page = paginator.paginate_queryset(events, request)
+
+            serializer = EventDescriptionSerializer(result_page, many=True)
+
+            return paginator.get_paginated_response(serializer.data)
+        except Event.DoesNotExist:
+            return Response({'error': 'Events not found for the specified protector ID.'}, status=status.HTTP_404_NOT_FOUND)
