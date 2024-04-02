@@ -18,7 +18,7 @@ class PetSerializer(serializers.ModelSerializer):
         read_only_fields = ['owner', 'is_active', 'followers', 'size']
 
     def create(self, validated_data):
-        images_data = self.context['request'].FILES.getlist('image')
+        images_data = self.context['request'].FILES.getlist('image[]')
         pet = Pet.objects.create(**validated_data)
         for i, image_data in enumerate(images_data):
             pet_image = PetImage.objects.create(pet=pet, image=image_data, order_number=i)
@@ -42,14 +42,15 @@ class PetSerializer(serializers.ModelSerializer):
 
         if 'weight' in validated_data:
             weight = validated_data['weight']
-            if weight < 5:
+            if weight <= 6:
                 instance.size = 'miniatura'
-            elif 5 <= weight < 15:
+            elif 6 < weight <= 15:
                 instance.size = 'pequeno'
-            elif 15 <= weight < 30:
+            elif 15 < weight <= 25:
                 instance.size = 'médio'
             else:
                 instance.size = 'grande'
+
 
         images_data = self.context['request'].FILES.getlist('image')
         

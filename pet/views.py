@@ -16,6 +16,7 @@ class PetsPagination(PageNumberPagination):
     page_size = 10  
     page_size_query_param = 'page_size' 
     max_page_size = 100 
+    
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
@@ -25,10 +26,21 @@ def create_pet(request):
     
     request_data = request.data.copy()
     request_data['owner'] = request.user.id
+
+    personality_values = request.POST.getlist('personality[]', [])
+    personality_values = [int(value) for value in personality_values]
+    
+    get_along_values = request.POST.getlist('get_along[]', [])
+    get_along_values = [int(value) for value in get_along_values]
+   
+
     serializer = PetSerializer(data=request_data, context={'request': request}) 
     
     if serializer.is_valid():
         serializer.validated_data['owner'] = request.user
+        serializer.validated_data['personality'] = personality_values
+        serializer.validated_data['get_along'] = get_along_values
+
         serializer.save()
 
         created_pet = Pet.objects.get(pk=serializer.data['id'])
@@ -37,6 +49,7 @@ def create_pet(request):
         return Response(created_serializer.data, status=status.HTTP_201_CREATED)
     
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
 
 @api_view(['PUT'])
 @permission_classes([IsAuthenticated])
@@ -49,10 +62,22 @@ def update_pet(request, pk):
     if request.user != pet.owner:
         return Response({'error': 'You are not the owner of this pet'}, status=status.HTTP_403_FORBIDDEN)
     
+    personality_values = request.data.getlist('personality[]', [])
+    personality_values = [int(value) for value in personality_values]
+    
+    get_along_values = request.data.getlist('get_along[]', [])
+    get_along_values = [int(value) for value in get_along_values]
+
     serializer = PetSerializer(pet, data=request.data, partial=True, context={'request': request})
     
     if serializer.is_valid():
         serializer.validated_data['owner'] = request.user
+
+        if personality_values:
+            serializer.validated_data['personality'] = personality_values
+        if get_along_values:
+            serializer.validated_data['get_along'] = get_along_values
+            
         serializer.save()
 
         # Envie e-mails aos usuários que favoritaram o pet

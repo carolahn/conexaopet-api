@@ -92,3 +92,12 @@ class CustomTokenObtainPairView(TokenObtainPairView):
                 pass
            
         return response
+    
+class ProtectorUserListView(generics.ListAPIView):
+    serializer_class = CustomUserSerializer
+    queryset = CustomUser.objects.filter(type=2).order_by('username')
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+        serializer = CustomUserSerializer(queryset, many=True)
+        return Response(serializer.data)
