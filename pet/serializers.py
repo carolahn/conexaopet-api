@@ -52,7 +52,7 @@ class PetSerializer(serializers.ModelSerializer):
                 instance.size = 'grande'
 
 
-        images_data = self.context['request'].FILES.getlist('image')
+        images_data = self.context['request'].FILES.getlist('image[]')
         
         for image in instance.images.all():
             # Remove fisicamente o arquivo de imagem associado

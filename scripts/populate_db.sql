@@ -7,16 +7,16 @@ VALUES ('Cobasi Linha Verde', 'Av. Sen. Salgado Filho', 580, 'Prado Velho', 'Cur
        ('Cobasi Centro', 'Rua Minas Gerais', 88, 'Centro', 'Londrina', 'PR'),
        ('Cobasi Madre Leônia', 'Av. Me. Leônia Milito', 2121, 'Bela Suiça', 'Londrina', 'PR');
 
-INSERT INTO custom_user (type, name, username, email, password, phone, city, uf, pix, site, image, is_superuser, is_staff, is_active)
-VALUES (1, 'Ana Maria Rosa', 'anamaria', 'carolzinha_voc@hotmail.com', 'pbkdf2_sha256$720000$KABVdTtVCAEQnUt6hBGqBp$q15nsurxb54JvDFAqc+c5MCynwdfdV4/RvGYbBcQBRg=', '41999999999', 'Curitiba', 'PR', null, null, null, FALSE, FALSE, TRUE),
-       (1, 'José Amaro', 'zeze', 'carolzinha_voc@hotmail.com', 'pbkdf2_sha256$720000$FrmLHkrgCnyxtI5WsswvJi$FGEAizBsqf8gnK/wvF5kpCQkiCOhydMIKJq2koVLBMk=', '41999999999', 'Curitiba', 'PR', null, null, null, FALSE, FALSE, TRUE),
-       (1, 'Luana Souza', 'luasouza', 'carolzinha_voc@hotmail.com', 'pbkdf2_sha256$720000$31LsQKT0b7Vg0NYqI1lJyH$fyw+SulF3IZNPPYZQPgq6w5NYpSp5AIBh+cK40+CdOU=', '41999999999', 'Curitiba', 'PR', null, null, null, FALSE, FALSE, TRUE),
-       (2, 'Protetor Paulo', 'protetorpaulo', 'carolzinha_voc@hotmail.com', 'pbkdf2_sha256$720000$3UkSQzdOwp4E528I0YmqYa$+PqF8O/L5XCug+9ODmZH9sfHF9ZbdiJkmPQmACfvMEw=', '41999999999', 'Curitiba', 'PR', '41999999999', null, 'media/profile_images/paulo.jpg', FALSE, FALSE, TRUE),
-       (2, 'Protetora Joana', 'protetorajoana', 'carolzinha_voc@hotmail.com', 'pbkdf2_sha256$720000$7b5M9RYIQEOIqU1ie8Cl2u$wuK3y2p2E+ZDvEa0IxoCu3Xk3WOnAS3YA1yp/jI6woo=', '41999999999', 'Curitiba', 'PR', '41999999999', null, 'media/profile_images/joana.jpg', FALSE, FALSE, TRUE),
-       (2, 'ONG Amicao', 'ong_amicao', 'carolzinha_voc@hotmail.com', 'pbkdf2_sha256$720000$sD5diFVpWTxQTTtsVCRpPE$EMpZAthaOMdBgGkcewBiYE+fdkGva8oqpRIlOTIRYGM=', '41999999999', 'Curitiba', 'PR', '41999999999', null, 'media/profile_images/amicao.jpg', FALSE, FALSE, TRUE),
-       (3, 'Carla Cobasi', 'cobasi', 'carolzinha_voc@hotmail.com', 'pbkdf2_sha256$720000$YjJM8mTnsPiVKE2mLsjK7f$7ZlBK1XPCSEJ/QRTAohcneULgcOWevTyrnTyl8/NZ04=', '41999999999', 'Curitiba', 'PR', '41999999999', 'http://www.cobasi.com.br', 'media/profile_images/cobasi.jpg', FALSE, FALSE, TRUE),
-       (3, 'João Petz', 'petz', 'carolzinha_voc@hotmail.com', 'pbkdf2_sha256$720000$5VX6dU48fBG0lkgIQGqkRt$o+6xeHCQ9TVjR5bydC/mO95ZuD6mjEyWbGhuoYPxoZ8=', '41999999999', 'Curitiba', 'PR', '41999999999', 'http://www.petz.com.br', 'media/profile_images/petz.jpg', FALSE, FALSE, TRUE),
-       (3, 'Jéssica Zee', 'zeedog', 'carolzinha_voc@hotmail.com', 'pbkdf2_sha256$720000$qMaLMfLURvnCMzaDwvADD3$dSuiKOYXxd/B51QmP93XGFKcBCw71kxilANmgno8Loo=', '41999999999', 'Curitiba', 'PR', '41999999999', 'http://www.zeedog.com.br', 'media/profile_images/zee.jpg', FALSE, FALSE, TRUE);
+INSERT INTO custom_user (type, name, username, email, password, phone, city, uf, pix, site, image, is_superuser, is_staff, is_active, description)
+VALUES (1, 'Ana Maria Rosa', 'anamaria', 'carolzinha_voc@hotmail.com', 'pbkdf2_sha256$720000$KABVdTtVCAEQnUt6hBGqBp$q15nsurxb54JvDFAqc+c5MCynwdfdV4/RvGYbBcQBRg=', '41999999999', 'Curitiba', 'PR', null, null, null, FALSE, FALSE, TRUE, null),
+       (1, 'José Amaro', 'zeze', 'carolzinha_voc@hotmail.com', 'pbkdf2_sha256$720000$FrmLHkrgCnyxtI5WsswvJi$FGEAizBsqf8gnK/wvF5kpCQkiCOhydMIKJq2koVLBMk=', '41999999999', 'Curitiba', 'PR', null, null, null, FALSE, FALSE, TRUE, null),
+       (1, 'Luana Souza', 'luasouza', 'carolzinha_voc@hotmail.com', 'pbkdf2_sha256$720000$31LsQKT0b7Vg0NYqI1lJyH$fyw+SulF3IZNPPYZQPgq6w5NYpSp5AIBh+cK40+CdOU=', '41999999999', 'Curitiba', 'PR', null, null, null, FALSE, FALSE, TRUE, null),
+       (2, 'Protetor Paulo', 'protetorpaulo', 'carolzinha_voc@hotmail.com', 'pbkdf2_sha256$720000$3UkSQzdOwp4E528I0YmqYa$+PqF8O/L5XCug+9ODmZH9sfHF9ZbdiJkmPQmACfvMEw=', '41999999999', 'Curitiba', 'PR', '41999999999', null, 'media/profile_images/paulo.jpg', FALSE, FALSE, TRUE, 'Cuido de mais de 300 animais. Me ajude nesta luta.'),
+       (2, 'Protetora Joana', 'protetorajoana', 'carolzinha_voc@hotmail.com', 'pbkdf2_sha256$720000$7b5M9RYIQEOIqU1ie8Cl2u$wuK3y2p2E+ZDvEa0IxoCu3Xk3WOnAS3YA1yp/jI6woo=', '41999999999', 'Curitiba', 'PR', '41999999999', null, 'media/profile_images/joana.jpg', FALSE, FALSE, TRUE, 'Não compre, adote! Confira os eventos e animais disponíveis para adoção'),
+       (2, 'ONG Amicao', 'ong_amicao', 'carolzinha_voc@hotmail.com', 'pbkdf2_sha256$720000$sD5diFVpWTxQTTtsVCRpPE$EMpZAthaOMdBgGkcewBiYE+fdkGva8oqpRIlOTIRYGM=', '41999999999', 'Curitiba', 'PR', '41999999999', null, 'media/profile_images/amicao.jpg', FALSE, FALSE, TRUE, 'ONG criada em 1998, para encontrar um lar aos animais de rua'),
+       (3, 'Carla Cobasi', 'cobasi', 'carolzinha_voc@hotmail.com', 'pbkdf2_sha256$720000$YjJM8mTnsPiVKE2mLsjK7f$7ZlBK1XPCSEJ/QRTAohcneULgcOWevTyrnTyl8/NZ04=', '41999999999', 'Curitiba', 'PR', '41999999999', 'http://www.cobasi.com.br', 'media/profile_images/cobasi.jpg', FALSE, FALSE, TRUE, null),
+       (3, 'João Petz', 'petz', 'carolzinha_voc@hotmail.com', 'pbkdf2_sha256$720000$5VX6dU48fBG0lkgIQGqkRt$o+6xeHCQ9TVjR5bydC/mO95ZuD6mjEyWbGhuoYPxoZ8=', '41999999999', 'Curitiba', 'PR', '41999999999', 'http://www.petz.com.br', 'media/profile_images/petz.jpg', FALSE, FALSE, TRUE, null),
+       (3, 'Jéssica Zee', 'zeedog', 'carolzinha_voc@hotmail.com', 'pbkdf2_sha256$720000$qMaLMfLURvnCMzaDwvADD3$dSuiKOYXxd/B51QmP93XGFKcBCw71kxilANmgno8Loo=', '41999999999', 'Curitiba', 'PR', '41999999999', 'http://www.zeedog.com.br', 'media/profile_images/zee.jpg', FALSE, FALSE, TRUE, null);
 
 INSERT INTO cupom (value, description, expiration, owner_id, is_active, image)
 VALUES ('SUPERSALE', 'Aproveite a supersale do ano!\nDescontos de até 50%', '2024-03-10', (SELECT COALESCE((SELECT id FROM custom_user WHERE name='Carla Cobasi'), 0)), TRUE, 'media/cupom_images/cupom1.jpg'),
@@ -129,7 +129,9 @@ VALUES ((SELECT COALESCE((SELECT id FROM pet WHERE name='Lua'), 0)), 'media/pet_
        ((SELECT COALESCE((SELECT id FROM pet WHERE name='Lua'), 0) + 34), 'media/pet_images/branca1.jpg', 0),
        ((SELECT COALESCE((SELECT id FROM pet WHERE name='Lua'), 0) + 35), 'media/pet_images/capitu1.jpg', 0),
        ((SELECT COALESCE((SELECT id FROM pet WHERE name='Lua'), 0) + 36), 'media/pet_images/mia2.jpg', 0),
-       ((SELECT COALESCE((SELECT id FROM pet WHERE name='Lua'), 0) + 36), 'media/pet_images/mia3.jpg', 1);
+       ((SELECT COALESCE((SELECT id FROM pet WHERE name='Lua'), 0) + 36), 'media/pet_images/mia3.jpg', 1),
+       ((SELECT COALESCE((SELECT id FROM pet WHERE name='Lua'), 0) + 37), 'media/pet_images/pacoca.jpg', 0),
+       ((SELECT COALESCE((SELECT id FROM pet WHERE name='Lua'), 0) + 38), 'media/pet_images/mia4.jpg', 0);
 
 INSERT INTO event (date_hour_initial, date_hour_end, address_id, owner_id, description, is_active, is_confirmed, followers, pets_ids)
 VALUES ('2024-03-23 09:00:00', '2024-03-23 17:00:00', 1, (SELECT COALESCE((SELECT id FROM custom_user WHERE name='Protetor Paulo'), 0)), 'Feira anual de adoção', TRUE, FALSE, 3, ''),

@@ -5,12 +5,14 @@ from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.pagination import PageNumberPagination
 from django.core.mail import send_mail
 from django.conf import settings
-from .models import Pet
+from .models import Pet, PetImage
 from .serializers import PetSerializer, PetDescriptionSerializer, SearchPetSerializer
+from event.models import Event
 from user.models import CustomUser
 from user.serializers import CustomUserSerializer
 from favorite_pet.models import FavoritePet
 from django.http import Http404
+import os
 
 class PetsPagination(PageNumberPagination):
     page_size = 10  
@@ -229,3 +231,42 @@ def get_pets_by_protector(request, pk):
     
     except Pet.DoesNotExist:
         return Response({'error': 'No pets found for this protector'}, status=status.HTTP_404_NOT_FOUND)
+    
+@api_view(['DELETE'])
+@permission_classes([IsAuthenticated])
+def delete_pet(request, pk):
+    try:
+        pet = Pet.objects.get(pk=pk)
+    except Pet.DoesNotExist:
+        return Response({'error': 'Pet does not exist.'}, status=status.HTTP_404_NOT_FOUND)
+
+    if request.user != pet.owner:
+        return Response({'error': 'You are not the owner of this pet'}, status=status.HTTP_403_FORBIDDEN)
+
+    # Remove as imagens associadas ao pet
+    for image in pet.images.all():
+        if image.image:
+            try:
+                os.remove(image.image.path)
+            except FileNotFoundError:
+                pass
+        image.delete()
+
+    # Remove o pet dos eventos
+    events = Event.objects.filter(pets=pet)
+    for event in events:
+        event.pets.remove(pet)
+
+    # Remove as entradas de favorite_pet relacionadas ao pet
+    favorites = FavoritePet.objects.filter(pet=pet)
+    for favorite in favorites:
+        recipient_email = favorite.user.email
+        subject = 'Pet indisponível'
+        message = f'Olá,\n\nO pet "{pet.name}" não está mais disponível.\nVeja outros pets que estão aguardando um lar.'
+        sender_email = settings.EMAIL_HOST_USER
+        send_mail(subject, message, sender_email, [recipient_email])
+    favorites.delete()
+
+    pet.delete()
+
+    return Response({'success': 'Pet deleted successfully'}, status=status.HTTP_200_OK)
