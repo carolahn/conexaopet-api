@@ -8,7 +8,7 @@ class Event(models.Model):
     pets_ids = models.CharField(max_length=255, default='', blank=True)
     date_hour_initial = models.DateTimeField()
     date_hour_end = models.DateTimeField()
-    address = models.ForeignKey('address.Address', on_delete=models.CASCADE)
+    address = models.ForeignKey('address.Address', on_delete=models.SET_NULL, null=True)
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     description = models.TextField()
     is_active = models.BooleanField(default=True)

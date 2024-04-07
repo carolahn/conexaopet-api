@@ -18,6 +18,35 @@ class EventsPagination(PageNumberPagination):
     page_size_query_param = 'page_size' 
     max_page_size = 100  
 
+# @api_view(['POST'])
+# @permission_classes([IsAuthenticated])
+# def create_event(request):
+#     if request.user.type != 2:
+#         return Response({'error': 'You do not have permission to perform this action.'}, status=status.HTTP_403_FORBIDDEN)
+    
+#     request.data['owner'] = request.user.id
+    
+#     serializer = EventSerializer(data=request.data, context={'request': request}) 
+    
+#     try:
+#         address_id = request.data.get('address')
+#         address_instance = Address.objects.get(pk=address_id)
+#     except Address.DoesNotExist:
+#         return Response({'error': 'Invalid address ID.'}, status=status.HTTP_400_BAD_REQUEST)
+
+#     if serializer.is_valid():
+#         serializer.validated_data['owner'] = request.user
+#         serializer.validated_data['address'] = address_instance
+
+#         serializer.save()
+
+#         created_event = Event.objects.get(pk=serializer.data['id'])
+#         created_serializer = EventDescriptionSerializer(created_event)
+        
+#         return Response(created_serializer.data, status=status.HTTP_201_CREATED)
+    
+#     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def create_event(request):
@@ -25,6 +54,11 @@ def create_event(request):
         return Response({'error': 'You do not have permission to perform this action.'}, status=status.HTTP_403_FORBIDDEN)
     
     request.data['owner'] = request.user.id
+
+    # pet_values = request.data.getlist('pet[]', [])
+    # pet_values = [int(value) for value in pet_values]
+    # request.data['pets'] = pet_values
+    # print("pet_values: ", request.data['pets'])
     
     serializer = EventSerializer(data=request.data, context={'request': request}) 
     
