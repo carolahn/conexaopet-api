@@ -98,3 +98,9 @@ class SearchPetSerializer(serializers.Serializer):
     owner = serializers.PrimaryKeyRelatedField(queryset=CustomUser.objects.all(), required=False)
     personality = serializers.CharField(required=False)
     get_along = serializers.CharField(required=False)
+
+
+class PetSimpleSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Pet
+        fields = ['id', 'name']

@@ -12,6 +12,8 @@ from favorite_event.models import FavoriteEvent
 from django.http import Http404
 from django.utils import timezone
 from address.models import Address
+import os
+
 
 class EventsPagination(PageNumberPagination):
     page_size = 10  
@@ -54,11 +56,6 @@ def create_event(request):
         return Response({'error': 'You do not have permission to perform this action.'}, status=status.HTTP_403_FORBIDDEN)
     
     request.data['owner'] = request.user.id
-
-    # pet_values = request.data.getlist('pet[]', [])
-    # pet_values = [int(value) for value in pet_values]
-    # request.data['pets'] = pet_values
-    # print("pet_values: ", request.data['pets'])
     
     serializer = EventSerializer(data=request.data, context={'request': request}) 
     
@@ -247,3 +244,38 @@ class EventListByProtector(APIView):
             return paginator.get_paginated_response(serializer.data)
         except Event.DoesNotExist:
             return Response({'error': 'Events not found for the specified protector ID.'}, status=status.HTTP_404_NOT_FOUND)
+        
+
+@api_view(['DELETE'])
+@permission_classes([IsAuthenticated])
+def delete_event(request, pk):
+    try:
+        event = Event.objects.get(pk=pk)
+    except Event.DoesNotExist:
+        return Response({'error': 'Event does not exist.'}, status=status.HTTP_404_NOT_FOUND)
+
+    if request.user != event.owner:
+        return Response({'error': 'You are not the owner of this event'}, status=status.HTTP_403_FORBIDDEN)
+
+    # Remove as imagens associadas ao event
+    for image in event.images.all():
+        if image.image:
+            try:
+                os.remove(image.image.path)
+            except FileNotFoundError:
+                pass
+        image.delete()
+
+    # Remove as entradas de favorite_event relacionadas ao event
+    favorites = FavoriteEvent.objects.filter(event=event)
+    for favorite in favorites:
+        recipient_email = favorite.user.email
+        subject = 'Evento cancelado'
+        message = f'Olá,\n\nO evento de "{event.owner.username}" em "{event.address.name}" foi cancelado.\nVeja outros eventos de adoção em ConexãoPet.'
+        sender_email = settings.EMAIL_HOST_USER
+        send_mail(subject, message, sender_email, [recipient_email])
+    favorites.delete()
+
+    event.delete()
+
+    return Response({'success': 'Event deleted successfully'}, status=status.HTTP_200_OK)

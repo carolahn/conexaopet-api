@@ -3,10 +3,11 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.pagination import PageNumberPagination
+from rest_framework.generics import ListAPIView
 from django.core.mail import send_mail
 from django.conf import settings
 from .models import Pet, PetImage
-from .serializers import PetSerializer, PetDescriptionSerializer, SearchPetSerializer
+from .serializers import PetSerializer, PetDescriptionSerializer, SearchPetSerializer, PetSimpleSerializer
 from event.models import Event
 from user.models import CustomUser
 from user.serializers import CustomUserSerializer
@@ -270,3 +271,10 @@ def delete_pet(request, pk):
     pet.delete()
 
     return Response({'success': 'Pet deleted successfully'}, status=status.HTTP_200_OK)
+
+class PetsByProtectorListView(ListAPIView):
+    serializer_class = PetSimpleSerializer
+
+    def get_queryset(self):
+        protector_id = self.kwargs['pk']
+        return Pet.objects.filter(owner=protector_id)
