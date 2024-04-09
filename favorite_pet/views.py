@@ -30,7 +30,9 @@ def add_favorite_pet(request, pet_id):
     pet.followers = FavoritePet.objects.filter(pet=pet).count()
     pet.save()
 
-    return Response({'message': 'Pet adicionado aos favoritos com sucesso'}, status=status.HTTP_201_CREATED)
+    serialized_pet = PetDescriptionSerializer(pet).data
+
+    return Response({'message': 'Pet adicionado aos favoritos com sucesso', 'pet': serialized_pet}, status=status.HTTP_201_CREATED)
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
@@ -42,12 +44,29 @@ def remove_favorite_pet(request, pet_id):
 
     # Atualiza o contador de seguidores do pet
     pet = favorite_pet.pet
+    favorite_pet.delete()
+
     pet.followers = FavoritePet.objects.filter(pet=pet).count()
     pet.save()
 
-    favorite_pet.delete()
+    serialized_pet = PetDescriptionSerializer(pet).data
 
-    return JsonResponse({'success': 'Pet favorito removido com sucesso.'}, status=200)
+    return JsonResponse({'success': 'Pet favorito removido com sucesso.', 'pet': serialized_pet}, status=200)
+
+# @api_view(['GET'])
+# @permission_classes([IsAuthenticated])
+# def list_favorite_pets(request):
+#     try:
+#         favorite_pets = FavoritePet.objects.filter(user_id=request.user.id).order_by('-id')
+#     except FavoritePet.DoesNotExist:
+#         return JsonResponse({'message': 'Não há pets favoritos.'}, status=200)
+    
+#     paginator = FavoritePetPagination()
+#     result_page = paginator.paginate_queryset(favorite_pets, request)
+
+#     serialized_data = [PetDescriptionSerializer(favorite.pet).data for favorite in result_page]
+    
+#     return paginator.get_paginated_response(serialized_data)
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
@@ -57,10 +76,7 @@ def list_favorite_pets(request):
     except FavoritePet.DoesNotExist:
         return JsonResponse({'message': 'Não há pets favoritos.'}, status=200)
     
-    paginator = FavoritePetPagination()
-    result_page = paginator.paginate_queryset(favorite_pets, request)
-
-    serialized_data = [PetDescriptionSerializer(favorite.pet).data for favorite in result_page]
+    serialized_data = [PetDescriptionSerializer(favorite.pet).data for favorite in favorite_pets]
     
-    return paginator.get_paginated_response(serialized_data)
+    return JsonResponse(serialized_data, status=200, safe=False)
         

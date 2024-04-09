@@ -29,8 +29,10 @@ def add_favorite_event(request, event_id):
     # Atualiza o contador de seguidores do evento
     event.followers = FavoriteEvent.objects.filter(event=event).count()
     event.save()
+
+    serialized_event = EventDescriptionSerializer(event).data
     
-    return Response({'message': 'Evento adicionado aos favoritos com sucesso'}, status=status.HTTP_201_CREATED)
+    return Response({'message': 'Evento adicionado aos favoritos com sucesso', 'event': serialized_event}, status=status.HTTP_201_CREATED)
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
@@ -42,12 +44,29 @@ def remove_favorite_event(request, event_id):
 
     # Atualiza o contador de seguidores do evento
     event = favorite_event.event
+    favorite_event.delete()
+
     event.followers = FavoriteEvent.objects.filter(event=event).count()
     event.save()
 
-    favorite_event.delete()
+    serialized_event = EventDescriptionSerializer(event).data
 
-    return JsonResponse({'success': 'Evento removido dos favoritos com sucesso.'}, status=200)
+    return JsonResponse({'success': 'Evento removido dos favoritos com sucesso.', 'event': serialized_event}, status=200)
+
+# @api_view(['GET'])
+# @permission_classes([IsAuthenticated])
+# def list_favorite_events(request):
+#     try:
+#         favorite_events = FavoriteEvent.objects.filter(user_id=request.user.id).order_by('-id')
+#     except FavoriteEvent.DoesNotExist:
+#         return JsonResponse({'error': 'Não há eventos favoritos.'}, status=404)
+
+#     paginator = FavoriteEventPagination()
+#     result_page = paginator.paginate_queryset(favorite_events, request)
+
+#     serialized_data = [EventDescriptionSerializer(favorite.event).data for favorite in result_page]
+
+#     return paginator.get_paginated_response(serialized_data)
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
@@ -57,10 +76,7 @@ def list_favorite_events(request):
     except FavoriteEvent.DoesNotExist:
         return JsonResponse({'error': 'Não há eventos favoritos.'}, status=404)
 
-    paginator = FavoriteEventPagination()
-    result_page = paginator.paginate_queryset(favorite_events, request)
+    serialized_data = [EventDescriptionSerializer(favorite.event).data for favorite in favorite_events]
 
-    serialized_data = [EventDescriptionSerializer(favorite.event).data for favorite in result_page]
-
-    return paginator.get_paginated_response(serialized_data)
+    return JsonResponse(serialized_data, status=200, safe=False)
 
