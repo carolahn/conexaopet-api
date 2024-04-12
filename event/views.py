@@ -11,6 +11,7 @@ from .serializers import EventSerializer, EventDescriptionSerializer
 from favorite_event.models import FavoriteEvent
 from django.http import Http404
 from django.utils import timezone
+from django.db.models import Q
 from address.models import Address
 import os
 
@@ -20,34 +21,6 @@ class EventsPagination(PageNumberPagination):
     page_size_query_param = 'page_size' 
     max_page_size = 100  
 
-# @api_view(['POST'])
-# @permission_classes([IsAuthenticated])
-# def create_event(request):
-#     if request.user.type != 2:
-#         return Response({'error': 'You do not have permission to perform this action.'}, status=status.HTTP_403_FORBIDDEN)
-    
-#     request.data['owner'] = request.user.id
-    
-#     serializer = EventSerializer(data=request.data, context={'request': request}) 
-    
-#     try:
-#         address_id = request.data.get('address')
-#         address_instance = Address.objects.get(pk=address_id)
-#     except Address.DoesNotExist:
-#         return Response({'error': 'Invalid address ID.'}, status=status.HTTP_400_BAD_REQUEST)
-
-#     if serializer.is_valid():
-#         serializer.validated_data['owner'] = request.user
-#         serializer.validated_data['address'] = address_instance
-
-#         serializer.save()
-
-#         created_event = Event.objects.get(pk=serializer.data['id'])
-#         created_serializer = EventDescriptionSerializer(created_event)
-        
-#         return Response(created_serializer.data, status=status.HTTP_201_CREATED)
-    
-#     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
@@ -199,19 +172,24 @@ def get_event_by_id(request, pk):
     
     return Response(serializer.data)
 
+
 @api_view(['GET'])
 @permission_classes([AllowAny])
 def search_event(request):
-    pets_ids = request.query_params.get('pets', None)
+    pets_names = request.query_params.get('pets', None)
     date = request.query_params.get('date', None)
     city = request.query_params.get('city', None)
     owner_id = request.query_params.get('owner', None)
 
     events = Event.objects.filter(is_active=True).order_by('-id')
 
-    if pets_ids:
-        pets_values = [int(id) for id in pets_ids.split(',')]
-        events = events.filter(pets__id__in=pets_values)
+    if pets_names:
+        pets = pets_names.split(',')
+        # Q objects para criar condições OR para cada nome de pet
+        pet_filters = Q()
+        for pet_name in pets:
+            pet_filters |= Q(pets__name__icontains=pet_name.strip())
+        events = events.filter(pet_filters)
 
     if date:
         events = events.filter(date_hour_initial__date=date)

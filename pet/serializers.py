@@ -32,6 +32,7 @@ class PetSerializer(serializers.ModelSerializer):
         instance.name = validated_data.get('name', instance.name)
         instance.gender = validated_data.get('gender', instance.gender)
         instance.age_year = validated_data.get('age_year', instance.age_year)
+        instance.type = validated_data.get('type', instance.type)
         instance.age_month = validated_data.get('age_month', instance.age_month)
         instance.weight = validated_data.get('weight', instance.weight)
         instance.breed = validated_data.get('breed', instance.breed)

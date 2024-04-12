@@ -92,22 +92,19 @@ def get_cupom_by_id(request, pk):
 def update_expired_cupons(request):
     user = request.user
     
-    # Cupons que já estão inativos e expiraram
-    expired_inactive_cupons = Cupom.objects.filter(owner=user, is_active=False, expiration__lt=timezone.now() - timedelta(days=90))
-    expired_inactive_count = expired_inactive_cupons.count()
-
-    # Remover cupons inativos e expirados há mais de 90 dias e suas imagens
-    for cupom in expired_inactive_cupons:
+    # Cupons que já estão inativos
+    inactive_cupons = Cupom.objects.filter(owner=user, is_active=False)
+    inactive_count = inactive_cupons.count()
+    for cupom in inactive_cupons:
         if cupom.image:
             cupom.image.delete()
         cupom.delete()
 
-    # Cupons que estão ativos e expiraram
-    expired_active_cupons = Cupom.objects.filter(owner=user, is_active=True, expiration__lt=timezone.now())
-    expired_active_count = expired_active_cupons.count()
-
-    # Atualizar cupons ativos que expiraram para inativos
-    for cupom in expired_active_cupons:
+    # Cupons que expiraram
+    expired_cupons = Cupom.objects.filter(owner=user, expiration__lt=timezone.now())
+    expired_count = expired_cupons.count()
+    deleted_count = inactive_count + expired_count
+    for cupom in expired_cupons:
         cupom.is_active = False
         cupom.save()
 
@@ -121,8 +118,7 @@ def update_expired_cupons(request):
 
     response_data = {
         'cupons': serializer.data,
-        'expired_inactive_count': expired_inactive_count,
-        'expired_active_count': expired_active_count
+        'deleted_count': deleted_count,
     }
     
     return paginator.get_paginated_response(response_data)
