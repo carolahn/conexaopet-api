@@ -13,7 +13,12 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 from pathlib import Path
 import datetime
 import os
+import environ
 from decouple import config
+
+# Initialise environment variables
+env = environ.Env()
+environ.Env.read_env()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -23,10 +28,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-8buv$y7#=7d#3_9odf)rno+i4e%t9y+7+j3y0o2%12jt)w33g)'
+SECRET_KEY = env('SECRET_KEY', default='django-insecure-8buv$y7#=7d#3_9odf)rno+i4e%t9y+7+j3y0o2%12jt)w33g)')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = int(env("DEBUG", default=1))
 
 CORS_ORIGIN_ALLOW_ALL = True
 ALLOWED_HOSTS = ['*']
@@ -110,15 +115,14 @@ WSGI_APPLICATION = 'conexaopet.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'conexaopet_db',
-        'USER': 'myuser',
-        'PASSWORD': '123456',
-        'HOST': 'localhost',
-        'PORT': '5432',
+        'ENGINE': env('DB_ENGINE', default='django.db.backends.postgresql'),
+        'NAME': env('DB_NAME', default='conexaopet_db'),
+        'USER': env('DB_USER', default='myuser'),
+        'PASSWORD': env('DB_PASSWORD', default='123456'),
+        'HOST': env('DB_HOST', default='localhost'),
+        'PORT': env('DB_PORT', default='5432'),
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
@@ -155,6 +159,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
 STATIC_URL = 'static/'
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
+STATIC_ROOT = os.path.join(BASE_DIR, 'static_root')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field

@@ -3,6 +3,7 @@ from django.urls import reverse
 from rest_framework import status
 from user.models import CustomUser
 from .models import Pet
+from django.core.files.uploadedfile import SimpleUploadedFile
 
 class PetTests(TestCase):
     def setUp(self):
@@ -17,36 +18,45 @@ class PetTests(TestCase):
             'age_year': 2,
             'age_month': 6,
             'weight': '15.5',
-            'size': 'pequeno',
             'breed': 1,
             'owner': self.user.id,
-            'personality': [4, 9],
-            'get_along': [1, 2],
+            'personality[]': 4,
+            'personality[]': 9,
+            'get_along[]': 1,
+            'get_along[]': 2,
             'description': 'Friendly and energetic dog',
             'is_active': True,
             'type': 1,
             'followers': 0
         }
-        response = self.client.post(url, data, format='json')
+        response = self.client.post(url, data, format='multipart')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(response.data['name'], 'Buddy')
 
-    def test_update_pet(self):
-        pet = Pet.objects.create(
-            name='Max', gender='M', age_year=3, age_month=0, weight='20.0',
-            size='médio', breed=2, owner=self.user,
-            description='Playful and friendly', is_active=True, type=1, followers=0
-        )
-        url = reverse('update_pet', kwargs={'pk': pet.pk})
-        data = {
-            'name': 'Maximus',
-            'weight': '22.0',
-            'description': 'Loves playing fetch and going for walks'
-        }
-        response = self.client.put(url, data, content_type='application/json')
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data['name'], 'Maximus')
-        self.assertEqual(response.data['weight'], '22.00')
+def test_update_pet(self):
+    pet = Pet.objects.create(
+        name='Max', gender='M', age_year=3, age_month=0, weight=20,
+        breed=2, owner=self.user,
+        description='Playful and friendly', is_active=True, type=1, followers=0
+    )
+    url = reverse('update_pet', kwargs={'pk': pet.pk})
+    data = {
+        'name': 'Maximus',
+        'weight': '22.0',
+        'description': 'Loves playing fetch and going for walks'
+    }
+    
+    uploaded_file = SimpleUploadedFile("file.txt", b"file_content", content_type="text/plain")
+    multipart_data = {
+        'name': data['name'],
+        'weight': data['weight'],
+        'description': data['description'],
+        'file_field_name': uploaded_file,  # Se houver campos de arquivo, adicione-os aqui
+    }
+    response = self.client.put(url, multipart_data, format='multipart', content_type='multipart/form-data')
+    self.assertEqual(response.status_code, status.HTTP_200_OK)
+    self.assertEqual(response.data['name'], 'Maximus')
+    self.assertEqual(response.data['weight'], '22.00')
 
     def test_get_all_pets(self):
         url = reverse('get_all_pets')

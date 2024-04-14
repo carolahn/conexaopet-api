@@ -14,6 +14,7 @@ from django.utils import timezone
 from django.db.models import Q
 from address.models import Address
 import os
+from django.http import QueryDict
 
 
 class EventsPagination(PageNumberPagination):
@@ -28,12 +29,15 @@ def create_event(request):
     if request.user.type != 2:
         return Response({'error': 'You do not have permission to perform this action.'}, status=status.HTTP_403_FORBIDDEN)
     
-    request.data['owner'] = request.user.id
+    # request.data['owner'] = request.user.id
+    request_data = QueryDict('', mutable=True)
+    request_data.update(request.data)
+    request_data['owner'] = request.user.id
     
-    serializer = EventSerializer(data=request.data, context={'request': request}) 
+    serializer = EventSerializer(data=request_data, context={'request': request}) 
     
     try:
-        address_id = request.data.get('address')
+        address_id = request_data.get('address')
         address_instance = Address.objects.get(pk=address_id)
     except Address.DoesNotExist:
         return Response({'error': 'Invalid address ID.'}, status=status.HTTP_400_BAD_REQUEST)

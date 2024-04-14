@@ -9,6 +9,7 @@ from rest_framework.pagination import PageNumberPagination
 from datetime import timedelta
 from .models import Cupom
 from .serializers import CupomSerializer, CupomUpdateSerializer
+from django.http import QueryDict
 
 class CupomPagination(PageNumberPagination):
     page_size = 10
@@ -21,7 +22,9 @@ def create_cupom(request):
     if request.user.type != 3:
         return Response({'error': 'You do not have permission to perform this action.'}, status=status.HTTP_403_FORBIDDEN)
     
-    request_data = request.data
+    # request_data = request.data
+    request_data = QueryDict('', mutable=True)
+    request_data.update(request.data)
     request_data['owner'] = request.user.id
 
     serializer = CupomUpdateSerializer(data=request_data)
