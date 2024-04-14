@@ -18,6 +18,9 @@ ENV DB_PORT=${DB_PORT}
 ENV EMAIL_HOST_USER=${EMAIL_HOST_USER}
 ENV EMAIL_HOST_PASSWORD=${EMAIL_HOST_PASSWORD} 
 
+# set environment variables from .env
+ENV $(cat .env | grep -v '#' | xargs)
+
 # debug: print package sources
 RUN apt-cache policy
 
@@ -34,7 +37,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
 
 # collect static files
-RUN python manage.py collectstatic --noinput
+# RUN python manage.py collectstatic --noinput
 
 # start server
 CMD [ "sh", "-c", "python manage.py migrate && python manage.py runserver 0.0.0.0:5000" ]
