@@ -107,6 +107,6 @@ jobs:
             docker stop conexaopet_web conexaopet_app conexaopet_db
             docker rm conexaopet_web conexaopet_app conexaopet_db
             rm -rf conexaopet-api
-            git clone https://github.com/carolahn/conexaopet-api.git
-            cd conexaopet-api
-            sudo docker-compose -f docker-compose.yml up --build -d
+            # git clone https://github.com/carolahn/conexaopet-api.git
+            # cd conexaopet-api
+            # sudo docker-compose -f docker-compose.yml up --build -d
