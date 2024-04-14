@@ -54,57 +54,59 @@ jobs:
       run: |
         python manage.py test
 
-  # deploy:
-  #   name: Deploying
-  #   needs: [test]
-  #   runs-on: ubuntu-latest
-  #   env:
-  #     EC2_HOST_DNS: ${{ secrets.EC2_HOST_DNS }}
-  #     SECRET_KEY: ${{ secrets.SECRET_KEY }}
-  #     DB_ENGINE: ${{ secrets.DB_ENGINE }}
-  #     DB_NAME: ${{ secrets.DB_NAME }}
-  #     DB_USER: ${{ secrets.DB_USER }}
-  #     DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-  #     DB_HOST: ${{ secrets.DB_HOST}}
-  #     DB_PORT: ${{ secrets.DB_PORT }}
-  #   steps:
-  #   - name: Install docker on EC2
-  #     uses: appleboy/ssh-action@master
-  #     with:
-  #       host: ${{ secrets.EC2_HOST_DNS }}
-  #       username: ${{ secrets.EC2_USERNAME }}
-  #       key: ${{ secrets.EC2_SSH_KEY_PEM }}
-  #       script: |
-  #           sudo su
-  #           sudo apt-get update
-  #           yes | sudo apt-get install docker.io
-  #           sudo systemctl start docker
-  #           sudo systemctl enable docker
-  #           sudo usermod -aG docker $USER
-  #           sudo usermod -aG docker ubuntu
-  #           exec bash
-  #   - name: Install docker-compose on EC2
-  #     uses: appleboy/ssh-action@master
-  #     with:
-  #       host: ${{ secrets.EC2_HOST_DNS }}
-  #       username: ${{ secrets.EC2_USERNAME }}
-  #       key: ${{ secrets.EC2_SSH_KEY_PEM }}
-  #       script: |
-  #           sudo su
-  #           sudo curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-  #           sudo chmod +x /usr/local/bin/docker-compose
-  #           docker-compose --version
-  #   - name: Deploying Application
-  #     uses: appleboy/ssh-action@master
-  #     with:
-  #       host: ${{ secrets.EC2_HOST_DNS }}
-  #       username: ${{ secrets.EC2_USERNAME }}
-  #       key: ${{ secrets.EC2_SSH_KEY_PEM }}
-  #       script: |
-  #           sudo su
-  #           docker stop core_web core_app core_db
-  #           docker rm core_web core_app core_db
-  #           rm -rf tcc-11-full-stack-mangabo-2
-  #           git clone https://github.com/carolahn/tcc-11-full-stack-mangabo-2.git
-  #           cd tcc-11-full-stack-mangabo-2
-  #           sudo docker-compose -f docker-compose.prod.yml up --build -d
+  deploy:
+    name: Deploying
+    needs: [test]
+    runs-on: ubuntu-20.04
+    env:
+      EC2_HOST_DNS: ${{ secrets.EC2_HOST_DNS }}
+      SECRET_KEY: ${{ secrets.SECRET_KEY }}
+      DB_ENGINE: ${{ secrets.DB_ENGINE }}
+      DB_NAME: ${{ secrets.DB_NAME }}
+      DB_USER: ${{ secrets.DB_USER }}
+      DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+      DB_HOST: ${{ secrets.DB_HOST}}
+      DB_PORT: ${{ secrets.DB_PORT }}
+      EMAIL_HOST_USER: ${{ secrets.EMAIL_HOST_USER }}
+      EMAIL_HOST_PASSWORD: ${{ secrets.EMAIL_HOST_PASSWORD }}
+    steps:
+    - name: Install docker on EC2
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.EC2_HOST_DNS }}
+        username: ${{ secrets.EC2_USERNAME }}
+        key: ${{ secrets.EC2_SSH_KEY_PEM }}
+        script: |
+            sudo su
+            sudo apt-get update
+            yes | sudo apt-get install docker.io
+            sudo systemctl start docker
+            sudo systemctl enable docker
+            sudo usermod -aG docker $USER
+            sudo usermod -aG docker ubuntu
+            exec bash
+    - name: Install docker-compose on EC2
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.EC2_HOST_DNS }}
+        username: ${{ secrets.EC2_USERNAME }}
+        key: ${{ secrets.EC2_SSH_KEY_PEM }}
+        script: |
+            sudo su
+            sudo curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+            sudo chmod +x /usr/local/bin/docker-compose
+            docker-compose --version
+    - name: Deploying Application
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.EC2_HOST_DNS }}
+        username: ${{ secrets.EC2_USERNAME }}
+        key: ${{ secrets.EC2_SSH_KEY_PEM }}
+        script: |
+            sudo su
+            docker stop conexaopet_web conexaopet_app conexaopet_db
+            docker rm conexaopet_web conexaopet_app conexaopet_db
+            rm -rf conexaopet-api
+            git clone https://github.com/carolahn/conexaopet-api.git
+            cd conexaopet-api
+            sudo docker-compose -f docker-compose.yml up --build -d
