@@ -141,11 +141,21 @@ def set_event_confirmation(request, pk):
             for favorite in favorites:
                 recipient_email = favorite.user.email
                 subject = 'Evento Confirmado'
-                message = f'O evento do dia "{event.date_hour_initial}" foi confirmado! Venha participar!'
+                message = f'O evento do dia "{str(event.date_hour_initial)[:10]}" foi confirmado! Venha participar!'
+                sender_email = settings.EMAIL_HOST_USER
+                send_mail(subject, message, sender_email, [recipient_email])
+        else:
+            favorites = FavoriteEvent.objects.filter(event=event)
+            for favorite in favorites:
+                recipient_email = favorite.user.email
+                subject = 'Evento Desconfirmado'
+                message = f'O evento do dia "{str(event.date_hour_initial)[:10]}" foi desconfirmado! Aguarde novas atualizações.'
                 sender_email = settings.EMAIL_HOST_USER
                 send_mail(subject, message, sender_email, [recipient_email])
 
-        return Response({'success': 'Status de confirmação do evento atualizado com sucesso'}, status=status.HTTP_200_OK)
+        serializer = EventDescriptionSerializer(event)
+    
+        return Response(serializer.data)
     else:
         return Response({'error': 'O campo is_confirmed é obrigatório'}, status=status.HTTP_400_BAD_REQUEST)
     
