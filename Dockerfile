@@ -8,6 +8,9 @@ WORKDIR /srv/app
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
+# debug: print package sources
+RUN apt-cache policy
+
 # install psycopg2 dependencies
 RUN apt-get update && apt-get install -y postgresql-dev gcc python3-dev
 
