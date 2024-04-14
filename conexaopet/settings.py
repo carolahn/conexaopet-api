@@ -14,6 +14,7 @@ from pathlib import Path
 import datetime
 import os
 import environ
+from decouple import config
 
 # Initialise environment variables
 env = environ.Env()
@@ -30,8 +31,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = env('SECRET_KEY', default='django-insecure-8buv$y7#=7d#3_9odf)rno+i4e%t9y+7+j3y0o2%12jt)w33g)')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-# DEBUG = int(env("DEBUG", default='0'))
-DEBUG = 0
+DEBUG = int(env("DEBUG", default=1))
 
 CORS_ORIGIN_ALLOW_ALL = True
 ALLOWED_HOSTS = ['*']
@@ -174,8 +174,8 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587  # Porta TLS
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = env('EMAIL_HOST_USER', 'email@email.com')
-EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD', '123456')
+EMAIL_HOST_USER = env('EMAIL_HOST_USER', default=config('EMAIL_HOST_USER'))
+EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD', default=config('EMAIL_HOST_PASSWORD'))
 
 # URL das imagens
 CUPOM_IMAGES_DIR = os.path.join(BASE_DIR, 'media', 'cupom_images')
