@@ -13,12 +13,8 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 from pathlib import Path
 import datetime
 import os
-import environ
 from decouple import config
 
-# Initialise environment variables
-env = environ.Env()
-environ.Env.read_env()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -28,7 +24,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = env('SECRET_KEY', default='django-insecure-8buv$y7#=7d#3_9odf)rno+i4e%t9y+7+j3y0o2%12jt)w33g)')
+SECRET_KEY = config('SECRET_KEY', default='django-insecure-8buv$y7#=7d#3_9odf)rno+i4e%t9y+7+j3y0o2%12jt)w33g)')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 # DEBUG = int(env("DEBUG", default='0'))
@@ -116,12 +112,12 @@ WSGI_APPLICATION = 'conexaopet.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': env('DB_ENGINE', default='django.db.backends.postgresql'),
-        'NAME': env('DB_NAME', default='conexaopet_db'),
-        'USER': env('DB_USER', default='myuser'),
-        'PASSWORD': env('DB_PASSWORD', default='123456'),
-        'HOST': env('DB_HOST', default='localhost'),
-        'PORT': env('DB_PORT', default='5432'),
+        'ENGINE': config('DB_ENGINE', default='django.db.backends.postgresql'),
+        'NAME': config('DB_NAME', default='conexaopet_db'),
+        'USER': config('DB_USER', default='myuser'),
+        'PASSWORD': config('DB_PASSWORD', default='123456'),
+        'HOST': config('DB_HOST', default='localhost'),
+        'PORT': config('DB_PORT', default='5432'),
     }
 }
 
@@ -175,8 +171,8 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587  # Porta TLS
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = env('EMAIL_HOST_USER', default=config('EMAIL_HOST_USER'))
-EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD', default=config('EMAIL_HOST_PASSWORD'))
+EMAIL_HOST_USER = config('EMAIL_HOST_USER', 'email@email.com')
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', '123456')
 
 # URL das imagens
 CUPOM_IMAGES_DIR = os.path.join(BASE_DIR, 'media', 'cupom_images')
