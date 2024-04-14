@@ -1,7 +1,7 @@
 version: '3.7'
 services:
   nginx:
-    container_name: coexaopet_web
+    container_name: conexaopet_web
     restart: on-failure
     image: nginx:1.25.4
     environment:
