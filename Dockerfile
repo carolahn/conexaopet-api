@@ -12,7 +12,7 @@ ENV PYTHONUNBUFFERED 1
 RUN apt-cache policy
 
 # install psycopg2 dependencies
-RUN apt-get update && apt-get install -y postgresql-dev gcc python3-dev
+RUN apt-get update && apt-get install -y postgresql-server-dev-all gcc python3-dev
 
 # install python dependencies
 COPY requirements.txt /srv/app/requirements.txt
