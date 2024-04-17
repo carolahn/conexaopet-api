@@ -8,6 +8,6 @@ urlpatterns = [
     path('cupons/<int:pk>/', get_cupom_by_id, name='cupom-detail'),
     path('cupons/all/', get_all_cupons, name='get_all_cupons'),
     path('cupons/update_expired/', update_expired_cupons, name='update_expired_cupons'),
-    path('cupons/user/', get_user_coupons, name='get_user_coupons'),
+    path('cupons/user/<int:pk>/', get_user_coupons, name='get_user_coupons'),
 ]
 

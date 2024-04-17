@@ -126,13 +126,25 @@ def update_expired_cupons(request):
     
     return paginator.get_paginated_response(response_data)
 
+# @api_view(['GET'])
+# @permission_classes([IsAuthenticated])
+# def get_user_coupons(request):
+#     user = request.user
+#     paginator = CupomPagination()
+
+#     user_coupons = Cupom.objects.filter(owner=user).order_by('expiration')
+#     result_page = paginator.paginate_queryset(user_coupons, request)
+
+#     serializer = CupomSerializer(result_page, many=True)
+    
+#     return paginator.get_paginated_response(serializer.data)
+
 @api_view(['GET'])
-@permission_classes([IsAuthenticated])
-def get_user_coupons(request):
-    user = request.user
+@permission_classes([AllowAny])
+def get_user_coupons(request, pk):
     paginator = CupomPagination()
 
-    user_coupons = Cupom.objects.filter(owner=user).order_by('expiration')
+    user_coupons = Cupom.objects.filter(owner_id=pk).order_by('expiration')
     result_page = paginator.paginate_queryset(user_coupons, request)
 
     serializer = CupomSerializer(result_page, many=True)
