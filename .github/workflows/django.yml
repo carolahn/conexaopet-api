@@ -115,4 +115,4 @@ jobs:
             # # apt install vim
             # # vim .env
             # Colar o conteúdo de .env.example
-            # docker-compose -f docker-compose.yml up --build -d
+            # docker-compose -f docker-compose.yml up --build

@@ -1,10 +1,13 @@
 from rest_framework import viewsets
 from rest_framework import generics, status
+from datetime import timedelta
+from django.utils import timezone
 from rest_framework.permissions import AllowAny
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework_simplejwt.tokens import AccessToken
+from rest_framework.exceptions import AuthenticationFailed
 from .models import CustomUser
 from .serializers import CustomUserSerializer
 
@@ -66,10 +69,29 @@ class UpdateUserView(generics.UpdateAPIView):
 
 class CustomTokenObtainPairView(TokenObtainPairView):
     def post(self, request, *args, **kwargs):
-        response = super().post(request, *args, **kwargs)
+        try:
+            response = super().post(request, *args, **kwargs)
+        except AuthenticationFailed:
+            username = request.data.get('username')
+            try:
+                custom_user = CustomUser.objects.get(username=username)
+                custom_user.login_attempts = (custom_user.login_attempts or 0) + 1
+                custom_user.last_login_attempt = timezone.now()
+                custom_user.save()
+
+                # Limite de 5 tentativas em 5 minutos
+                if (custom_user.login_attempts or 0) >= 5 and custom_user.last_login_attempt:
+                    if timezone.now() - custom_user.last_login_attempt < timedelta(minutes=5):
+                        return Response({'error': 'Too many login attempts. Please try again later.'}, status=status.HTTP_403_FORBIDDEN)
+                    else:
+                        custom_user.login_attempts = 0
+                        custom_user.save()
+            except CustomUser.DoesNotExist:
+                pass
+            raise
+
         if response.status_code == 200:
             username = request.data.get('username') 
-
             try:
                 custom_user = CustomUser.objects.get(username=username)
                 custom_data = {
@@ -86,6 +108,8 @@ class CustomTokenObtainPairView(TokenObtainPairView):
                     'description': custom_user.description,
                     'image': custom_user.image.url if custom_user.image else None
                 }
+                custom_user.login_attempts = 0
+                custom_user.save()
                 response.data['user'] = custom_data
  
             except CustomUser.DoesNotExist:

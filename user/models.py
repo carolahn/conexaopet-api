@@ -22,6 +22,8 @@ class CustomUser(AbstractUser):
     is_superuser = models.BooleanField(blank=True, null=True, default=False)
     is_active = models.BooleanField(blank=True, null=True, default=True)
     date_joined = models.DateTimeField(blank=True, null=True)
+    login_attempts = models.IntegerField(null=True, blank=True, default=0)
+    last_login_attempt = models.DateTimeField(null=True, blank=True)
 
     class Meta:
         db_table = 'custom_user'
