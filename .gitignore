@@ -129,6 +129,6 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
-# media/*
+media/*
 
-postgres_data/*
+# postgres_data/*
