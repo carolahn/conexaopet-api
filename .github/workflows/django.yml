@@ -90,10 +90,13 @@ jobs:
       run: ls -la
     - name: Get secrets from GitHub
       run: |
-        echo "de secrets"
+        echo "antes"
         echo ls -la
+        echo "SECRET_KEY=${{ secrets.SECRET_KEY }}"
         echo "SECRET_KEY=${{ secrets.SECRET_KEY }}" >> .env
+        echo "DEBUG=${{ secrets.DEBUG }}"
         echo "DEBUG=${{ secrets.DEBUG }}" >> .env
+        echo "DB_ENGINE=${{ secrets.DB_ENGINE }}" 
         echo "DB_ENGINE=${{ secrets.DB_ENGINE }}" >> .env
         echo "DB_HOST=${{ secrets.DB_HOST }}" >> .env
         echo "DB_NAME=${{ secrets.DB_NAME }}" >> .env
@@ -110,6 +113,7 @@ jobs:
         echo "ACCESS_TOKEN_LIFETIME=${{ secrets.ACCESS_TOKEN_LIFETIME }}" >> .env
         echo "REFRESH_TOKEN_LIFETIME=${{ secrets.REFRESH_TOKEN_LIFETIME }}" >> .env
         echo "DJANGO_SETTINGS_MODULE=${{ secrets.DJANGO_SETTINGS_MODULE }}" >> .env
+        echo ".env"
         cat .env
         
 
