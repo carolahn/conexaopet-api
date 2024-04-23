@@ -85,6 +85,7 @@ jobs:
       run: touch .env
     - name: Get secrets from GitHub
       run: |
+        echo "SECRET_KEY=${{ secrets.SECRET_KEY }}" >> .env
         echo "SECRET_KEY=$(curl -s -H 'Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' https://api.github.com/repos/${{ github.repository }}/actions/secrets/SECRET_KEY | jq -r .secret)" >> .env
         echo "DEBUG=$(curl -s -H 'Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' https://api.github.com/repos/${{ github.repository }}/actions/secrets/DEBUG | jq -r .secret)" >> .env
         echo "DB_ENGINE=$(curl -s -H 'Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' https://api.github.com/repos/${{ github.repository }}/actions/secrets/DB_ENGINE | jq -r .secret)" >> .env
