@@ -84,7 +84,7 @@ jobs:
     - name: Create .env file
       run: |
         mkdir conexaopet-api
-        cd conexãopet-api
+        cd conexaopet-api
         touch .env
     - name: Debug creation of .env file
       run: ls -la
