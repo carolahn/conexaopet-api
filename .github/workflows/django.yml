@@ -134,6 +134,7 @@ jobs:
         echo "DJANGO_SETTINGS_MODULE=$(curl -s -H 'Authorization: Bearer ${{ secrets.GIT_TOKEN }}' https://api.github.com/repos/${{ github.repository }}/actions/secrets/DJANGO_SETTINGS_MODULE | jq -r .secret)" >> .env
         cat .env
 
+        curl -s -H 'Authorization: Bearer ${{ secrets.GIT_TOKEN }}' https://api.github.com/repos/${{ github.repository }}/actions/secrets/DEBUG | jq -r .secret)
     - name: Install docker on EC2
       uses: appleboy/ssh-action@master
       with:
