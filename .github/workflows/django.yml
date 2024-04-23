@@ -112,26 +112,26 @@ jobs:
 
         cat .env
         echo "de curl"
-        echo "SECRET_KEY=$(curl -s -H 'Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' https://api.github.com/repos/${{ github.repository }}/actions/secrets/SECRET_KEY | jq -r .secret)"
-        echo "SECRET_KEY=$(curl -s -H 'Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' https://api.github.com/repos/${{ github.repository }}/actions/secrets/SECRET_KEY | jq -r .secret)" >> .env
+        echo "SECRET_KEY=$(curl -s -H 'Authorization: Bearer ${{ secrets.GIT_TOKEN }}' https://api.github.com/repos/${{ github.repository }}/actions/secrets/SECRET_KEY | jq -r .secret)"
+        echo "SECRET_KEY=$(curl -s -H 'Authorization: Bearer ${{ secrets.GIT_TOKEN }}' https://api.github.com/repos/${{ github.repository }}/actions/secrets/SECRET_KEY | jq -r .secret)" >> .env
         cat .env
-        echo "DEBUG=$(curl -s -H 'Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' https://api.github.com/repos/${{ github.repository }}/actions/secrets/DEBUG | jq -r .secret)" >> .env
-        echo "DB_ENGINE=$(curl -s -H 'Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' https://api.github.com/repos/${{ github.repository }}/actions/secrets/DB_ENGINE | jq -r .secret)" >> .env
-        echo "DB_HOST=$(curl -s -H 'Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' https://api.github.com/repos/${{ github.repository }}/actions/secrets/DB_HOST | jq -r .secret)" >> .env
-        echo "DB_NAME=$(curl -s -H 'Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' https://api.github.com/repos/${{ github.repository }}/actions/secrets/DB_NAME | jq -r .secret)" >> .env
-        echo "DB_PASSWORD=$(curl -s -H 'Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' https://api.github.com/repos/${{ github.repository }}/actions/secrets/DB_PASSWORD | jq -r .secret)" >> .env
-        echo "DB_PORT=$(curl -s -H 'Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' https://api.github.com/repos/${{ github.repository }}/actions/secrets/DB_PORT | jq -r .secret)" >> .env
-        echo "DB_USER=$(curl -s -H 'Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' https://api.github.com/repos/${{ github.repository }}/actions/secrets/DB_USER | jq -r .secret)" >> .env
-        echo "EC2_HOST_DNS=$(curl -s -H 'Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' https://api.github.com/repos/${{ github.repository }}/actions/secrets/EC2_HOST_DNS | jq -r .secret)" >> .env
-        echo "EC2_SSH_KEY_PEM=$(curl -s -H 'Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' https://api.github.com/repos/${{ github.repository }}/actions/secrets/EC2_SSH_KEY_PEM | jq -r .secret)" >> .env
-        echo "EC2_USERNAME=$(curl -s -H 'Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' https://api.github.com/repos/${{ github.repository }}/actions/secrets/EC2_USERNAME | jq -r .secret)" >> .env
-        echo "EMAIL_HOST_USER=$(curl -s -H 'Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' https://api.github.com/repos/${{ github.repository }}/actions/secrets/EMAIL_HOST_USER | jq -r .secret)" >> .env
-        echo "EMAIL_HOST_PASSWORD=$(curl -s -H 'Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' https://api.github.com/repos/${{ github.repository }}/actions/secrets/EMAIL_HOST_PASSWORD | jq -r .secret)" >> .env
-        echo "STATICFILES=$(curl -s -H 'Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' https://api.github.com/repos/${{ github.repository }}/actions/secrets/STATICFILES | jq -r .secret)" >> .env
-        echo "MEDIAFILES=$(curl -s -H 'Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' https://api.github.com/repos/${{ github.repository }}/actions/secrets/MEDIAFILES | jq -r .secret)" >> .env
-        echo "ACCESS_TOKEN_LIFETIME=$(curl -s -H 'Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' https://api.github.com/repos/${{ github.repository }}/actions/secrets/ACCESS_TOKEN_LIFETIME | jq -r .secret)" >> .env
-        echo "REFRESH_TOKEN_LIFETIME=$(curl -s -H 'Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' https://api.github.com/repos/${{ github.repository }}/actions/secrets/REFRESH_TOKEN_LIFETIME | jq -r .secret)" >> .env
-        echo "DJANGO_SETTINGS_MODULE=$(curl -s -H 'Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' https://api.github.com/repos/${{ github.repository }}/actions/secrets/DJANGO_SETTINGS_MODULE | jq -r .secret)" >> .env
+        echo "DEBUG=$(curl -s -H 'Authorization: Bearer ${{ secrets.GIT_TOKEN }}' https://api.github.com/repos/${{ github.repository }}/actions/secrets/DEBUG | jq -r .secret)" >> .env
+        echo "DB_ENGINE=$(curl -s -H 'Authorization: Bearer ${{ secrets.GIT_TOKEN }}' https://api.github.com/repos/${{ github.repository }}/actions/secrets/DB_ENGINE | jq -r .secret)" >> .env
+        echo "DB_HOST=$(curl -s -H 'Authorization: Bearer ${{ secrets.GIT_TOKEN }}' https://api.github.com/repos/${{ github.repository }}/actions/secrets/DB_HOST | jq -r .secret)" >> .env
+        echo "DB_NAME=$(curl -s -H 'Authorization: Bearer ${{ secrets.GIT_TOKEN }}' https://api.github.com/repos/${{ github.repository }}/actions/secrets/DB_NAME | jq -r .secret)" >> .env
+        echo "DB_PASSWORD=$(curl -s -H 'Authorization: Bearer ${{ secrets.GIT_TOKEN }}' https://api.github.com/repos/${{ github.repository }}/actions/secrets/DB_PASSWORD | jq -r .secret)" >> .env
+        echo "DB_PORT=$(curl -s -H 'Authorization: Bearer ${{ secrets.GIT_TOKEN }}' https://api.github.com/repos/${{ github.repository }}/actions/secrets/DB_PORT | jq -r .secret)" >> .env
+        echo "DB_USER=$(curl -s -H 'Authorization: Bearer ${{ secrets.GIT_TOKEN }}' https://api.github.com/repos/${{ github.repository }}/actions/secrets/DB_USER | jq -r .secret)" >> .env
+        echo "EC2_HOST_DNS=$(curl -s -H 'Authorization: Bearer ${{ secrets.GIT_TOKEN }}' https://api.github.com/repos/${{ github.repository }}/actions/secrets/EC2_HOST_DNS | jq -r .secret)" >> .env
+        echo "EC2_SSH_KEY_PEM=$(curl -s -H 'Authorization: Bearer ${{ secrets.GIT_TOKEN }}' https://api.github.com/repos/${{ github.repository }}/actions/secrets/EC2_SSH_KEY_PEM | jq -r .secret)" >> .env
+        echo "EC2_USERNAME=$(curl -s -H 'Authorization: Bearer ${{ secrets.GIT_TOKEN }}' https://api.github.com/repos/${{ github.repository }}/actions/secrets/EC2_USERNAME | jq -r .secret)" >> .env
+        echo "EMAIL_HOST_USER=$(curl -s -H 'Authorization: Bearer ${{ secrets.GIT_TOKEN }}' https://api.github.com/repos/${{ github.repository }}/actions/secrets/EMAIL_HOST_USER | jq -r .secret)" >> .env
+        echo "EMAIL_HOST_PASSWORD=$(curl -s -H 'Authorization: Bearer ${{ secrets.GIT_TOKEN }}' https://api.github.com/repos/${{ github.repository }}/actions/secrets/EMAIL_HOST_PASSWORD | jq -r .secret)" >> .env
+        echo "STATICFILES=$(curl -s -H 'Authorization: Bearer ${{ secrets.GIT_TOKEN }}' https://api.github.com/repos/${{ github.repository }}/actions/secrets/STATICFILES | jq -r .secret)" >> .env
+        echo "MEDIAFILES=$(curl -s -H 'Authorization: Bearer ${{ secrets.GIT_TOKEN }}' https://api.github.com/repos/${{ github.repository }}/actions/secrets/MEDIAFILES | jq -r .secret)" >> .env
+        echo "ACCESS_TOKEN_LIFETIME=$(curl -s -H 'Authorization: Bearer ${{ secrets.GIT_TOKEN }}' https://api.github.com/repos/${{ github.repository }}/actions/secrets/ACCESS_TOKEN_LIFETIME | jq -r .secret)" >> .env
+        echo "REFRESH_TOKEN_LIFETIME=$(curl -s -H 'Authorization: Bearer ${{ secrets.GIT_TOKEN }}' https://api.github.com/repos/${{ github.repository }}/actions/secrets/REFRESH_TOKEN_LIFETIME | jq -r .secret)" >> .env
+        echo "DJANGO_SETTINGS_MODULE=$(curl -s -H 'Authorization: Bearer ${{ secrets.GIT_TOKEN }}' https://api.github.com/repos/${{ github.repository }}/actions/secrets/DJANGO_SETTINGS_MODULE | jq -r .secret)" >> .env
         cat .env
 
     - name: Install docker on EC2
