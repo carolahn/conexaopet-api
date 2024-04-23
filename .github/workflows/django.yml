@@ -143,9 +143,9 @@ jobs:
             mv .env conexaopet-api/
             # conectar-se à instância EC2 
             # $ ssh -i "myapp-express-keys.pem" ubuntu@ec2-52-91-212-72.compute-1.amazonaws.com
-            # $ cd conexaopet-api
+            $ cd conexaopet-api
             # $ sudo su
             # # apt install vim
             # # vim .env
             # Colar o conteúdo de .env.example
-            # docker-compose -f docker-compose.yml up --build
+            docker-compose -f docker-compose.yml up --build
