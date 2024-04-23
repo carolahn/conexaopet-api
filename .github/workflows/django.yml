@@ -92,8 +92,8 @@ jobs:
       run: |
         echo "de secrets"
         echo ${{secrets.EMAIL_HOST_USER}} | sed 's/./& /g'
-        echo ${{secrets.EMAIL_HOST_USER}} | sed 's/./& /g' | tr -d '\n'
-        echo "EMAIL_HOST_USER=$(echo ${{secrets.EMAIL_HOST_USER}} | sed 's/./& /g' | tr -d '\n')" >> .env
+        echo ${{secrets.EMAIL_HOST_USER}} | sed 's/./& /g' | sed 's/ //g'
+        echo "EMAIL_HOST_USER=$(echo ${{secrets.EMAIL_HOST_USER}} | sed 's/./& /g' | sed 's/ //g')" >> .env
         echo "SECRET_KEY=${{ secrets.SECRET_KEY }}" >> .env
         echo "DEBUG=${{ secrets.DEBUG }}" >> .env
         echo "DB_ENGINE=${{ secrets.DB_ENGINE }}" >> .env
