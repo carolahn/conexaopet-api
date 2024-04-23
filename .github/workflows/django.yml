@@ -91,6 +91,7 @@ jobs:
     - name: Get secrets from GitHub
       run: |
         echo "de secrets"
+        echo $EMAIL_HOST_USER
         echo "SECRET_KEY=${{ secrets.SECRET_KEY }}" >> .env
         echo "DEBUG=${{ secrets.DEBUG }}" >> .env
         echo "DB_ENGINE=${{ secrets.DB_ENGINE }}" >> .env
