@@ -87,10 +87,14 @@ jobs:
       run: ls -la
     - name: Get secrets from GitHub
       run: |
+        echo "de secrets"
         echo "SECRET_KEY=${{ secrets.SECRET_KEY }}"
         echo "SECRET_KEY=${{ secrets.SECRET_KEY }}" >> .env
+        cat .env
+        echo "de curl"
         echo "SECRET_KEY=$(curl -s -H 'Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' https://api.github.com/repos/${{ github.repository }}/actions/secrets/SECRET_KEY | jq -r .secret)"
         echo "SECRET_KEY=$(curl -s -H 'Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' https://api.github.com/repos/${{ github.repository }}/actions/secrets/SECRET_KEY | jq -r .secret)" >> .env
+        cat .env
         echo "DEBUG=$(curl -s -H 'Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' https://api.github.com/repos/${{ github.repository }}/actions/secrets/DEBUG | jq -r .secret)" >> .env
         echo "DB_ENGINE=$(curl -s -H 'Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' https://api.github.com/repos/${{ github.repository }}/actions/secrets/DB_ENGINE | jq -r .secret)" >> .env
         echo "DB_HOST=$(curl -s -H 'Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' https://api.github.com/repos/${{ github.repository }}/actions/secrets/DB_HOST | jq -r .secret)" >> .env
