@@ -96,6 +96,12 @@ jobs:
             sudo curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
             sudo chmod +x /usr/local/bin/docker-compose
             docker-compose --version
+    - name: Set up environment variables
+      run: |
+        echo "SECRET_KEY=${{ secrets.SECRET_KEY }}" >> $GITHUB_ENV
+        echo "DEBUG=${{ secrets.DEBUG }}" >> $GITHUB_ENV
+        echo "DB_ENGINE=${{ secrets.DB_ENGINE }}" >> $GITHUB_ENV
+
     - name: Deploying Application
       uses: appleboy/ssh-action@master
       with:
@@ -103,6 +109,11 @@ jobs:
         username: ${{ secrets.EC2_USERNAME }}
         key: ${{ secrets.EC2_SSH_KEY_PEM }}
         script: |
+            echo "SECRET_KEY=${{ env.SECRET_KEY }}" > .env
+            echo "DEBUG=${{ env.DEBUG }}" >> .env
+            echo "DB_ENGINE=${{ env.DB_ENGINE }}" >> .env
+            echo "imprime .env"
+            cat .env
             sudo su
             docker stop conexaopet_web conexaopet_app conexaopet_db
             docker rm conexaopet_web conexaopet_app conexaopet_db
