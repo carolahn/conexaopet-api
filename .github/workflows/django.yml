@@ -96,24 +96,34 @@ jobs:
             sudo curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
             sudo chmod +x /usr/local/bin/docker-compose
             docker-compose --version
-    - name: Set up environment variables
-      run: |
-        echo "SECRET_KEY=${{ secrets.SECRET_KEY }}" >> $GITHUB_ENV
-        echo "DEBUG=${{ secrets.DEBUG }}" >> $GITHUB_ENV
-        echo "DB_ENGINE=${{ secrets.DB_ENGINE }}" >> $GITHUB_ENV
-
+    
     - name: Deploying Application
       uses: appleboy/ssh-action@master
+      env:
+        SECRET_KEY: ${{ secrets.SECRET_KEY }}
+        DEBUG: ${{ secrets.DEBUG }}
+        DB_ENGINE: ${{ secrets.DB_ENGINE }}
+        DB_HOST: ${{ secrets.DB_HOST}}
+        DB_NAME: ${{ secrets.DB_NAME }}
+        DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+        DB_PORT: ${{ secrets.DB_PORT }}
+        DB_USER: ${{ secrets.DB_USER }}
+        EC2_HOST_DNS: ${{ secrets.EC2_HOST_DNS }}
+        EC2_SSH_KEY_PEM: ${{ secrets.EC2_SSH_KEY_PEM }}
+        EC2_USERNAME: ${{ secrets.EC2_USERNAME }}
+        EMAIL_HOST_USER: ${{ secrets.EMAIL_HOST_USER }}
+        EMAIL_HOST_PASSWORD: ${{ secrets.EMAIL_HOST_PASSWORD }}
+        STATICFILES: ${{ secrets.STATICFILES }}
+        MEDIAFILES: ${{ secrets.MEDIAFILES }}
+        ACCESS_TOKEN_LIFETIME: ${{ secrets.ACCESS_TOKEN_LIFETIME }}
+        REFRESH_TOKEN_LIFETIME: ${{ secrets.REFRESH_TOKEN_LIFETIME }}
+        DJANGO_SETTINGS_MODULE: ${{ secrets.DJANGO_SETTINGS_MODULE }}
       with:
         host: ${{ secrets.EC2_HOST_DNS }}
         username: ${{ secrets.EC2_USERNAME }}
         key: ${{ secrets.EC2_SSH_KEY_PEM }}
+        envs: SECRET_KEY,DEBUG,DB_ENGINE,DB_HOST,DB_NAME,DB_PASSWORD,DB_PORT,DB_USER,EC2_HOST_DNS,EC2_SSH_KEY_PEM,EC2_USERNAME,EMAIL_HOST_USER,EMAIL_HOST_PASSWORD,STATICFILES,MEDIAFILES,ACCESS_TOKEN_LIFETIME,REFRESH_TOKEN_LIFETIME,DJANGO_SETTINGS_MODULE
         script: |
-            echo "SECRET_KEY=${{ env.SECRET_KEY }}" > .env
-            echo "DEBUG=${{ env.DEBUG }}" >> .env
-            echo "DB_ENGINE=${{ env.DB_ENGINE }}" >> .env
-            echo "imprime .env"
-            cat .env
             sudo su
             docker stop conexaopet_web conexaopet_app conexaopet_db
             docker rm conexaopet_web conexaopet_app conexaopet_db
