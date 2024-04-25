@@ -124,18 +124,29 @@ jobs:
         key: ${{ secrets.EC2_SSH_KEY_PEM }}
         envs: SECRET_KEY,DEBUG,DB_ENGINE,DB_HOST,DB_NAME,DB_PASSWORD,DB_PORT,DB_USER,EC2_HOST_DNS,EC2_SSH_KEY_PEM,EC2_USERNAME,EMAIL_HOST_USER,EMAIL_HOST_PASSWORD,STATICFILES,MEDIAFILES,ACCESS_TOKEN_LIFETIME,REFRESH_TOKEN_LIFETIME,DJANGO_SETTINGS_MODULE
         script: |
+            export SECRET_KEY=$SECRET_KEY
+            export DEBUG=$DEBUG
+            export DB_ENGINE=$DB_ENGINE
+            export DB_HOST=$DB_HOST
+            export DB_NAME=$DB_NAME
+            export DB_PASSWORD=$DB_PASSWORD
+            export DB_PORT=$DB_PORT
+            export DB_USER=$DB_USER
+            export EC2_HOST_DNS=$EC2_HOST_DNS
+            export EC2_SSH_KEY_PEM=$EC2_SSH_KEY_PEM
+            export EC2_USERNAME=$EC2_USERNAME
+            export EMAIL_HOST_USER=$EMAIL_HOST_USER
+            export EMAIL_HOST_PASSWORD=$EMAIL_HOST_PASSWORD
+            export STATICFILES=$STATICFILES
+            export MEDIAFILES=$MEDIAFILES
+            export ACCESS_TOKEN_LIFETIME=$ACCESS_TOKEN_LIFETIME
+            export REFRESH_TOKEN_LIFETIME=$REFRESH_TOKEN_LIFETIME
+            export DJANGO_SETTINGS_MODULE=$DJANGO_SETTINGS_MODULE
+           
             sudo su
             docker stop conexaopet_web conexaopet_app conexaopet_db
             docker rm conexaopet_web conexaopet_app conexaopet_db
             rm -rf conexaopet-api
             git clone https://github.com/carolahn/conexaopet-api.git
-            # conectar-se à instância EC2 
-            # $ ssh -i "myapp-express-keys.pem" ubuntu@ec2-52-91-212-72.compute-1.amazonaws.com
-            # $ cd conexaopet-api
-            # $ sudo su
-            # # apt install vim
-            # # vim .env
-            # Colar o conteúdo de .env.example
-            # docker-compose -f docker-compose.yml up --build
             cd conexaopet-api
             docker-compose -f docker-compose.yml up --build

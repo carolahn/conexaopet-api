@@ -7,17 +7,24 @@ services:
       dockerfile: Dockerfile
     container_name: conexaopet_web
     environment:
-      - EC2_HOST_DNS=${EC2_HOST_DNS}
       - SECRET_KEY=${SECRET_KEY}
       - DEBUG=${DEBUG}
       - DB_ENGINE=${DB_ENGINE}
-      - DB_NAME=${DB_NAME}
-      - DB_USER=${DB_USER}
-      - DB_PASSWORD=${DB_PASSWORD}
       - DB_HOST=${DB_HOST}
+      - DB_NAME=${DB_NAME}
+      - DB_PASSWORD=${DB_PASSWORD}
       - DB_PORT=${DB_PORT}
+      - DB_USER=${DB_USER}
+      - EC2_HOST_DNS=${EC2_HOST_DNS}
+      - EC2_SSH_KEY_PEM=${EC2_SSH_KEY_PEM}
+      - EC2_USERNAME=${EC2_USERNAME}
       - EMAIL_HOST_USER=${EMAIL_HOST_USER}
       - EMAIL_HOST_PASSWORD=${EMAIL_HOST_PASSWORD}
+      - STATICFILES=${STATICFILES}
+      - MEDIAFILES=${MEDIAFILES}
+      - ACCESS_TOKEN_LIFETIME=${ACCESS_TOKEN_LIFETIME}
+      - REFRESH_TOKEN_LIFETIME=${REFRESH_TOKEN_LIFETIME}
+      - DJANGO_SETTINGS_MODULE=${DJANGO_SETTINGS_MODULE}
     command: >
       sh -c "python manage.py migrate && gunicorn conexaopet.wsgi:application --bind 0.0.0.0:8000"
     volumes:
@@ -26,8 +33,6 @@ services:
       - ./media:/app/media
     expose:
       - 8000
-    env_file:
-      - ./.env
     depends_on:
       - db
 
@@ -35,25 +40,30 @@ services:
     image: postgres:15.6
     container_name: conexaopet_db
     environment:
-      - EC2_HOST_DNS=${EC2_HOST_DNS}
       - SECRET_KEY=${SECRET_KEY}
       - DEBUG=${DEBUG}
       - DB_ENGINE=${DB_ENGINE}
-      - DB_NAME=${DB_NAME}
-      - DB_USER=${DB_USER}
-      - DB_PASSWORD=${DB_PASSWORD}
       - DB_HOST=${DB_HOST}
+      - DB_NAME=${DB_NAME}
+      - DB_PASSWORD=${DB_PASSWORD}
       - DB_PORT=${DB_PORT}
+      - DB_USER=${DB_USER}
+      - EC2_HOST_DNS=${EC2_HOST_DNS}
+      - EC2_SSH_KEY_PEM=${EC2_SSH_KEY_PEM}
+      - EC2_USERNAME=${EC2_USERNAME}
       - EMAIL_HOST_USER=${EMAIL_HOST_USER}
       - EMAIL_HOST_PASSWORD=${EMAIL_HOST_PASSWORD}
+      - STATICFILES=${STATICFILES}
+      - MEDIAFILES=${MEDIAFILES}
+      - ACCESS_TOKEN_LIFETIME=${ACCESS_TOKEN_LIFETIME}
+      - REFRESH_TOKEN_LIFETIME=${REFRESH_TOKEN_LIFETIME}
+      - DJANGO_SETTINGS_MODULE=${DJANGO_SETTINGS_MODULE}
       - POSTGRES_DB=conexaopet_db
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
     volumes:
       - postgres_data:/var/lib/conexaopet-api_postgres_data/data/ 
       - ./scripts/populate_db.sql:/populate_db.sql
-    env_file:
-      - ./.env
     healthcheck:
       test: ["CMD", "pg_isready", "-U", "postgres"]
       interval: 10s
@@ -76,19 +86,24 @@ services:
       context: ./nginx
       dockerfile: Dockerfile
     environment:
-      - EC2_HOST_DNS=${EC2_HOST_DNS}
       - SECRET_KEY=${SECRET_KEY}
       - DEBUG=${DEBUG}
       - DB_ENGINE=${DB_ENGINE}
-      - DB_NAME=${DB_NAME}
-      - DB_USER=${DB_USER}
-      - DB_PASSWORD=${DB_PASSWORD}
       - DB_HOST=${DB_HOST}
+      - DB_NAME=${DB_NAME}
+      - DB_PASSWORD=${DB_PASSWORD}
       - DB_PORT=${DB_PORT}
+      - DB_USER=${DB_USER}
+      - EC2_HOST_DNS=${EC2_HOST_DNS}
+      - EC2_SSH_KEY_PEM=${EC2_SSH_KEY_PEM}
+      - EC2_USERNAME=${EC2_USERNAME}
       - EMAIL_HOST_USER=${EMAIL_HOST_USER}
       - EMAIL_HOST_PASSWORD=${EMAIL_HOST_PASSWORD}
-    env_file:
-      - ./.env
+      - STATICFILES=${STATICFILES}
+      - MEDIAFILES=${MEDIAFILES}
+      - ACCESS_TOKEN_LIFETIME=${ACCESS_TOKEN_LIFETIME}
+      - REFRESH_TOKEN_LIFETIME=${REFRESH_TOKEN_LIFETIME}
+      - DJANGO_SETTINGS_MODULE=${DJANGO_SETTINGS_MODULE}
     volumes:
       - staticfiles:/app/media
       - ./media:/app/media
