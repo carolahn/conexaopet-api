@@ -14,3 +14,5 @@ RUN pip install -r requirements.txt
 COPY . /app
 
 ENV PYTHONPATH=/app
+
+CMD ["tail", "-f", "/dev/null"]

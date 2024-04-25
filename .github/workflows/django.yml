@@ -149,6 +149,4 @@ jobs:
             rm -rf conexaopet-api
             git clone https://github.com/carolahn/conexaopet-api.git
             cd conexaopet-api
-            docker-compose -f docker-compose.yml up --build
-
-            exit 0
+            docker-compose -f docker-compose.yml up --build -d
