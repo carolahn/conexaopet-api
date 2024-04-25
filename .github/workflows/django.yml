@@ -137,3 +137,5 @@ jobs:
             # # vim .env
             # Colar o conteúdo de .env.example
             # docker-compose -f docker-compose.yml up --build
+            cd conexaopet-api
+            docker-compose -f docker-compose.yml up --build
