@@ -235,9 +235,7 @@ VALUES 	((SELECT COALESCE((SELECT id FROM event WHERE description='Feira anual d
         ((SELECT COALESCE((SELECT id FROM event WHERE description='Feira anual de adoção'), 0) + 23), (SELECT COALESCE((SELECT id FROM pet WHERE name='Lua'), 0)) + 35);
 
 INSERT INTO event_image (event_id, image, order_number)
-VALUES ((SELECT COALESCE((SELECT id FROM event WHERE description='Feira anual de adoção'), 0)), 'event_images/event.jpg', 0),
-       ((SELECT COALESCE((SELECT id FROM event WHERE description='Feira anual de adoção'), 0)), 'event_images/event1.jpg', 1),
-       ((SELECT COALESCE((SELECT id FROM event WHERE description='Feira anual de adoção'), 0)), 'event_images/event2.jpg', 2),
+VALUES ((SELECT COALESCE((SELECT id FROM event WHERE description='Feira anual de adoção'), 0)), 'event_images/event1.jpg', 2),
        ((SELECT COALESCE((SELECT id FROM event WHERE description='Feira anual de adoção'), 0) + 1), 'event_images/event3.jpg', 0),
        ((SELECT COALESCE((SELECT id FROM event WHERE description='Feira anual de adoção'), 0) + 2), 'event_images/event4.jpg', 0),
        ((SELECT COALESCE((SELECT id FROM event WHERE description='Feira anual de adoção'), 0) + 3), 'event_images/event5.jpg', 0),
@@ -245,7 +243,7 @@ VALUES ((SELECT COALESCE((SELECT id FROM event WHERE description='Feira anual de
        ((SELECT COALESCE((SELECT id FROM event WHERE description='Feira anual de adoção'), 0) + 5), 'event_images/event7.jpg', 0),
        ((SELECT COALESCE((SELECT id FROM event WHERE description='Feira anual de adoção'), 0) + 6), 'event_images/event8.jpg', 0),
        ((SELECT COALESCE((SELECT id FROM event WHERE description='Feira anual de adoção'), 0) + 7), 'event_images/event9.jpg', 0),
-       ((SELECT COALESCE((SELECT id FROM event WHERE description='Feira anual de adoção'), 0) + 8), 'event_images/event10.jpg', 0),
+       ((SELECT COALESCE((SELECT id FROM event WHERE description='Feira anual de adoção'), 0) + 8), 'event_images/event2.jpg', 0),
        ((SELECT COALESCE((SELECT id FROM event WHERE description='Feira anual de adoção'), 0) + 9), 'event_images/event11.jpg', 0),
        ((SELECT COALESCE((SELECT id FROM event WHERE description='Feira anual de adoção'), 0) + 10), 'event_images/event12.jpg', 0),
        ((SELECT COALESCE((SELECT id FROM event WHERE description='Feira anual de adoção'), 0) + 11), 'event_images/event13.jpg', 0),

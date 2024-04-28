@@ -41,11 +41,10 @@ urlpatterns = [
 # ]
 
 # Para o servidor local usar:
-# urlpatterns += static(settings.CUPOM_IMAGES_URL, document_root=settings.CUPOM_IMAGES_DIR)
-# urlpatterns += static(settings.EVENT_IMAGES_URL, document_root=settings.EVENT_IMAGES_DIR)
-# urlpatterns += static(settings.PET_IMAGES_URL, document_root=settings.PET_IMAGES_DIR)
-# urlpatterns += static(settings.PROFILE_IMAGES_URL, document_root=settings.PROFILE_IMAGES_DIR)
+urlpatterns += static(settings.CUPOM_IMAGES_URL, document_root=settings.CUPOM_IMAGES_DIR)
+urlpatterns += static(settings.EVENT_IMAGES_URL, document_root=settings.EVENT_IMAGES_DIR)
+urlpatterns += static(settings.PET_IMAGES_URL, document_root=settings.PET_IMAGES_DIR)
+urlpatterns += static(settings.PROFILE_IMAGES_URL, document_root=settings.PROFILE_IMAGES_DIR)
 
 # Para servir pelo nginx:
-# if settings.DEBUG:
-urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+# urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
