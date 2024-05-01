@@ -55,3 +55,8 @@ git push origin main
 Após finalizar o deploy, teste a API realizando uma solicitação GET (substitua pelo IP da sua instância EC2)   
 `http://ec2-3-90-29-93.compute-1.amazonaws.com:8008/api/addresses/all/`  
 
+#### Usuários para teste:  
+username: anamaria          password: 123456  
+username: protetorpaulo     password: 123456  
+username: cobasi            password: 123456  
+
