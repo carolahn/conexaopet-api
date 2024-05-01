@@ -24,7 +24,7 @@ Acessar o diretório do projeto:
 `cd conexaopet-api`  
 
 Executar contêineres  
-`docker compose up --build`  
+`docker compose -f docker-compose.dev.yml up --build`  
 
 Teste a API realizando uma solicitação GET para  
 `http://localhost:8000/api/addresses/all/`  
