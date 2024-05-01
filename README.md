@@ -27,7 +27,7 @@ Executar contêineres
 `docker compose -f docker-compose.dev.yml up --build`  
 
 Teste a API realizando uma solicitação GET para  
-`http://localhost:8000/api/addresses/all/`  
+`http://localhost:8008/api/addresses/all/`  
 
 ### Servir na EC2:  
 
